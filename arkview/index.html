@@ -1,0 +1,756 @@
+<!doctype html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap-switch.css" />
+    <link rel="stylesheet" type="text/css" href="css/jquery-ui.css">
+
+  <script src="lib/jquery.min.js"></script>
+  <script src="/lib/jquery-1.10.2.js"></script>
+  <script src="/lib/jquery-ui.js"></script>
+  <script src="/lib/jquery.ui.touch-punch.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/lib/bootstrap-switch.js"></script>
+  <script src="/lib/bootstrap.min.js"></script>
+</head>
+
+<!--<body onload="sensorNow(); updateClock(); setInterval('updateClock()', 1000 );">  -->
+<body class="ui-widget-content" style="border:0;">
+
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner center">
+      <div id="arkNav">
+
+        <img src="/img/ark-reactor.png" style="height: 25px; width: auto; float: left; padding: 12px">
+
+        <ul class="nav nav-pills">
+<!--           <li><a class="brand" href="#home" data-toggle="pill"></a></li>-->
+          <li style="padding: 5px" class="active"><a href="#Sensa" data-toggle="pill">Activate!</a></li>
+          <li style="padding: 5px"><a href="#Light" data-toggle="pill">Light</a></li>
+          <li style="padding: 5px"><a href="#Temp" data-toggle="pill">Temp</a></li>
+          <!-- <li style="padding: 5px"><a href="#Dose" data-toggle="pill">Dose</a></li> -->
+          <!--<li><button type="button" id="sensorNow" class="btn btn-primary">Ark</button></li>-->
+       </ul>
+     </div>
+    </div>
+  </div>
+
+
+  <div class="tab-content">
+
+  <div class="tab-pane active" id="Sensa">
+
+      <div class="well Activate center">
+        <h4>Dose!</h4>
+              <div id="Activate" class="switch switch-large" data-on="success" data-off="">
+              <input type="checkbox"/>
+             </div>
+      </div>
+
+      <div class="well Activate center">
+        <h4>Direction</h4>
+              <div id="Direction" class="switch switch-large" data-on="primary" data-off="info" data-on-label="In" data-off-label="Out">
+              <input type="checkbox"/>
+             </div>
+      </div>
+
+                <!-- Begin MailChimp Signup Form -->
+      <!-- <link href="//cdn-images.mailchimp.com/embedcode/slim-081711.css" rel="stylesheet" type="text/css">
+      <style type="text/css">
+        #mc_embed_signup{background:#fff; clear:left; font:14px Helvetica,Arial,sans-serif;}
+        /* Add your own MailChimp form style overrides in your site stylesheet or in this style block.
+           We recommend moving this block and the preceding CSS link to the HEAD of your HTML file. */
+      </style>
+      <div class="signup">
+        <div id="mc_embed_signup" style="width:224px; margin: 0 auto;">
+        <form action="http://sensa.us8.list-manage.com/subscribe/post?u=55b8a5a1d0c3c05e0a06fc45a&amp;id=bb37e81191" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
+          <label for="mce-EMAIL">Subscribe to our mailing list!</label>
+          <input type="email" value="" name="EMAIL" class="email" id="mce-EMAIL" placeholder="email address" required style="width: 224px">
+            <!real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+           <!--  <div style="position: absolute; left: -5000px;"><input type="text" name="b_55b8a5a1d0c3c05e0a06fc45a_bb37e81191" tabindex="-1" value=""></div>
+            <div class="clear"><input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button" style="margin: 0 auto;"></div> -->
+       <!--  </form>
+        </div>
+      </div> -->
+
+   <!--  <table><tbody><tr>
+      <td style="vertical-align: top">
+          <div class="well containedSensa center">
+                <div id="Activate" class="switch" data-on="success" data-off="">
+                  <input type="checkbox"/>
+                </div>
+                  <table><tbody>
+                    <tr>
+                      <td><h4>Insulation Temp</h4></td>
+                      <td><h4 id ="liquidTemp" class="sensa">&nbsp;</h4></td></tr>
+                    <tr>
+                      <td><h4>Air Temp</h4></td>
+                      <td><h4 id ="tempi2c" class="sensa">&nbsp;</h4></td></tr>
+                    <tr>
+                      <td><h4>Humidity</h4></td>
+                      <td><h4 id ="humidityi2c" class="sensa">&nbsp;</h4></td></tr>
+                    <tr>
+                      <td><h4>CO2</h4></td>
+                      <td><h4 id ="CO2" class="sensa">&nbsp;</h4></td></tr>
+                    <tr>
+                      <td><h4>Culture Temp</h4></td>
+                      <td><h4 id ="liquidTemp" class="sensa">&nbsp;</h4></td></tr>
+                    <tr>
+                      <td><h4>Sonication</h4></td>
+                      <td><h4 id ="sonication" class="sensa">&nbsp;</h4></td></tr>
+                    <tr>
+                      <td><h4>Optical Density</h4></td>
+                      <td><h4 id ="optic" class="sensa">&nbsp;</h4></td></tr>
+                    <tr>
+                      <td><h4>Color</h4></td>
+                      <td><h4 id ="RGBColor" class="sensa">&nbsp;</h4></td></tr>
+                    <tr>
+                      <td><h4>pH</h4></td>
+                      <td><h4 id ="ph" class="sensa">&nbsp;</h4></td></tr>
+                    <tr>
+                      <td><h4>dOxy</h4></td>
+                      <td><h4 id ="doxy" class="sensa">&nbsp;</h4></td></tr>
+                    <tr>
+                      <td><h4>ORP</h4></td>
+                      <td><h4 id ="orp" class="sensa">&nbsp;</h4></td></tr>
+                    <tr>
+                      <td><h4>EC</h4></td>
+                      <td><h4 id ="doxy" class="sensa">&nbsp;</h4></td></tr>
+                  </tbody></table>
+          </div>
+      </td>
+      <td style="vertical-align: top;">
+          <div class="containedGraph">
+            <center>
+             <iframe id="igraph" src="http://plot.ly/~streaming-demos/52/" width="700" height="438" style="margin: 40px auto" seamless="seamless" scrolling="no"></iframe>
+            </center> -->
+
+            <!--<center>-->
+            <!--  <iframe id="igraph" src="https://plot.ly/~gmon01/32" width="700" height="438" style="margin: 40px auto" seamless="seamless" scrolling="no"></iframe>-->
+            <!--</center>-->
+   <!--        </div>
+      </td>
+    </tr></tbody></table>-->
+  </div>
+
+
+
+  <div class="tab-pane" id="Light">
+
+      <div class="well RGBLights center">
+        <div id="red"></div>
+        <div id="green"></div>
+        <div id="blue"></div>
+        <div id="swatch" class="ui-widget-content ui-corner-all"></div>
+      </div>
+
+      <div class="well Incubate center">
+            <table><tbody><tr>
+            <td>
+             <h4>R</h4>
+             <div id="RedLight" class="switch" data-on="success" data-off="">
+              <input type="checkbox"/>
+             </div>
+            </td>
+            <td>
+             <h4>G</h4>
+              <div id="GreenLight" class="switch" data-on="success" data-off="">
+              <input type="checkbox"/>
+             </div>
+            </td>
+             <td>
+             <h4>B</h4>
+              <div id="BlueLight" class="switch" data-on="success" data-off="">
+              <input type="checkbox"/>
+             </div>
+            </td>
+          </tr></tbody></table>
+      </div>
+
+     <!--  <div class="well GrowLights center">
+          <h3>GrowLight</h3>
+          <div id="GrowLight" class="switch switch-large" data-on="success" data-off="">
+            <input type="checkbox"/>
+          </div>
+      </div> -->
+
+  </div>
+
+
+
+  <div class="tab-pane" id="Temp">
+
+      <!-- <div class="well Incubate center">
+          <h3>Incubation Temp</h3>
+          <input type="text" id="amount" style="border:0; color:#00CCFF; font-weight:bold; width: 66px; margin-bottom: 0px">
+          <div id="slider-incubate"></div>
+          <div id="Incubate" class="switch" data-on="success" data-off="">
+                <input type="checkbox"/>
+          </div>
+      </div> -->
+         <div class="well Incubate center">
+
+          <h3>Incubate</h3>
+          <table width=100%><tbody>
+               <tr>
+
+                   <div class="fieldSize">
+                      <!--<h4> Liquid Culture </h4>-->
+                      <p>
+                      <input type="text" id="amountLiquid" style="border:0; color:#00CCFF; font-weight:bold;">
+                      </p>
+
+                      <div id="slider-liquidRange"></div>
+
+                    <!--  <div class="input-group">-->
+                    <!--    <input id="waterHeaterHigh" type="text" class="form-control" placeholder="High ˚F">-->
+                    <!--  </div>-->
+
+                    <!--  <div class="input-group">-->
+                    <!--    <input id="waterHeaterLow" type="text" class="form-control" placeholder="Low ˚F">-->
+                    <!--  </div>-->
+                    <!--<div>-->
+                    <!--  <input id="checkWaterHeater" type="checkbox" />-->
+                    <!--</div>-->
+                   </div>
+                </tr>
+
+             <!--    <tr>
+                  <div class="fieldSize">
+                      <h4> Air Culture </h4>
+                      <p>
+                      <input type="text" id="amountAir" style="border:0; color:#00CCFF; font-weight:bold;">
+                      </p>
+
+                      <div id="slider-airRange"></div>
+
+                    <div class="input-group">
+                    <input id="spaceHeaterHigh" type="text" class="form-control" placeholder="High ˚F">
+                    </div>
+                    <div class="input-group">
+                      <input id="spaceHeaterLow" type="text" class="form-control" placeholder="Low ˚F">
+                    </div>
+                    <div>
+                     <input id="checkSpaceHeater" type="checkbox" />
+                    </div>
+                  </div>
+                </tr> -->
+          </tbody></table>
+
+
+          <div id="Thermocycle" class="switch switch-large" data-on="success" data-off="">
+                <input type="checkbox"/>
+          </div>
+
+      <!--    <div class="fieldSize">
+            <div>
+              <select id="thermocycle-schedule">
+                        <option value="5" >5 seconds</option>
+                        <option value="30" >30 seconds</option>
+                        <option value="60" >60 seconds</option>
+                        <option value="300" >5 minutes</option>
+                        <option value="600" >10 minutes</option>
+              </select>
+            </div>
+         </div> -->
+
+      </div>
+  </div>
+
+
+
+
+  <!-- <div class="tab-pane" id="Dose">
+
+
+
+        <div class="well DoseLiquid center">
+
+                <table><tbody>
+                    <tr><td>
+                      <h3>Input</h3>
+                      <div id="InputPump" class="switch switch-large" data-on="success" data-off="">
+                        <input type="checkbox"/>
+                      </div>
+                    </td>
+                    <td>
+                       <h3>Output</h3>
+                       <div id="OutputPump" class="switch switch-large" data-on="success" data-off="">
+                        <input type="checkbox"/>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody></table>
+        </div>
+        <div class="well DoseAir center">
+            <h3>Air</h3>
+            <div id="AirPump" class="switch switch-large" data-on="success" data-off="">
+              <input type="checkbox"/>
+            </div>
+        </div>
+
+  </div> -->
+
+
+</div>
+
+<script>
+//switch between tabs
+    $('#myTab a[href="#Temp"]').click(function (e) {
+      e.preventDefault()
+      $(this).tab('show')
+    });
+
+    $('#myTab a[href="#Culture"]').click(function (e) {
+      e.preventDefault()
+      $(this).tab('show')
+    });
+
+    $('#myTab a[href="#Light"]').click(function (e) {
+      e.preventDefault()
+      $(this).tab('show')
+    });
+
+     $('#myTab a[href="#Sensa"]').click(function (e) {
+      e.preventDefault()
+      $(this).tab('show')
+    });
+</script>
+
+
+<script>
+//activate pump dosing
+
+      $('#Activate').on('switch-change', function (e, data) {
+          socket.emit('command', {state: data.value , module:'doseCycle'});
+          console.log(data);
+          // socket.emit('command', {  module:'doseCycle' });
+      });
+
+      $('#Direction').on('switch-change', function (e, data) {
+          socket.emit('command', {state: data.value , module:'doseDirection'});
+          console.log(data);
+          // socket.emit('command', {  module:'doseCycle' });
+      });
+</script>
+
+
+<script>
+//send sensa up to UI
+
+    var date = new Date();
+
+    function getTime() {
+
+      var hour = date.getHours();
+      hour = (hour < 10 ? "0" : "") + hour;
+
+      var min  = date.getMinutes();
+      min = (min < 10 ? "0" : "") + min;
+
+      var sec  = date.getSeconds();
+      sec = (sec < 10 ? "0" : "") + sec;
+
+      return hour + ":" + min + ":" + sec;
+    }
+
+
+    function getDate() {
+      var year = date.getFullYear();
+
+      var month = date.getMonth() + 1;
+      month = (month < 10 ? "0" : "") + month;
+
+      var day  = date.getDate();
+      day = (day < 10 ? "0" : "") + day;
+
+      return month + "-" + day + "-" + year;
+
+    }
+
+    var socket = io.connect('http://192.168.255.100:8088');
+
+    socket.on('sensor_report', function(data){
+      console.log('Sensor Report');
+      if ( data.liquidTemp != "none" ) {
+
+        var timeonly = getTime();
+        var dateonly = getDate();
+        $('#sensorDate').text(dateonly);
+        $('#sensorTime').text(timeonly);
+
+        $('#liquidTemp').text(data.liquidTemp.Fahrenheit + ' ˚F');
+      }
+      if ( data.humidityi2c != "none" ) {
+        $('#humidityi2c').text(data.humidityi2c.Humidity + '%');
+        $('#tempi2c').text(data.humidityi2c.Fahrenheit + ' ˚F');
+      }
+      if ( data.ph != "none" ) {
+        $('#ph').text(data.ph);
+      }
+      // if ( data.humidityIn != "none" ) {
+      //   $('#humidityIn').text(data.humidityIn.Humidity + '%');
+      //   $('#tempIn').text(data.humidityIn.Fahrenheit + ' ˚F');
+      // }
+    });
+
+  </script>
+
+  <script>
+   // var socket = io.connect('/');
+  //Switches for lights
+      $('#RedLight').on('switch-change', function (e, data) {
+          if ( data.value ) {
+             $( "#red" ).slider("enable");
+          } else {
+             $( "#red" ).slider("disable");
+             $( "#red" ).slider( "value", 0 );
+          }
+          console.log(data.value);
+          socket.emit('command', {state: data.value , module:'lights', relayID:'Mosfet1', value: $( "#red" ).slider( "value" ) });
+      });
+
+      $('#red')
+
+      $('#GreenLight').on('switch-change', function (e, data) {
+          if ( data.value ) {
+             $( "#green" ).slider("enable");
+          } else {
+             $( "#green" ).slider("disable");
+             $( "#green" ).slider( "value", 0 );
+          }
+          socket.emit('command', {state: data.value , module:'lights', relayID:'Mosfet2', value: $( "#green" ).slider( "value" )});
+      });
+
+      $('#BlueLight').on('switch-change', function (e, data) {
+          if ( data.value ) {
+             $( "#blue" ).slider("enable");
+          } else {
+             $( "#blue" ).slider("disable");
+             $( "#blue" ).slider( "value", 0 );
+          }
+          socket.emit('command', {state: data.value , module:'lights', relayID:'Mosfet3',  value: $( "#blue" ).slider( "value" ) });
+      });
+
+      $('#GrowLight').on('switch-change', function (e, data) {
+          socket.emit('command', {state: data.value , module:'lights', relayID:'Mosfet4'});
+      });
+  </script>
+
+  <script>
+  //Switches for temp
+      $('#Incubate').on('switch-change', function (e, data) {
+          if ( !data.value ) {
+             $("#slider-incubate").slider("enable");
+          } else {
+             $("#slider-incubate").slider("disable");
+          }
+          socket.emit('command', {state: data.value , module:'toggleControl', relayID:'relay1' });
+          if ( data.value ) {
+             socket.emit('command', { module: 'incubate', value: $( "#slider-incubate" ).slider( "value" ) } );
+          }
+      });
+
+      $('#Thermocycle').on('switch-change', function (e, data) {
+          if ( !data.value ) {
+             $("#slider-airRange").slider("enable");
+          } else {
+             $("#slider-airRange").slider("disable");
+          }
+          if ( !data.value ) {
+             $("#slider-liquidRange").slider("enable");
+          } else {
+             $("#slider-liquidRange").slider("disable");
+          }
+
+          // socket.emit('command', {state: data.value , module:'toggleControl', relayID:'relay1' });
+          if ( data.value ) {
+            console.log('thermocycle');
+
+            // var x=document.getElementById("thermocycle-schedule").selectedIndex;
+            // var y=document.getElementById("thermocycle-schedule").options;
+            // alert("Schedule updated: " + y[x].text );
+            // var timerValue = y[x].value;
+
+
+            var lbT = $( "#slider-liquidRange" ).slider( "values", 0 );
+            var ubT = $( "#slider-liquidRange" ).slider( "values", 1 );
+
+            socket.emit('command', { module:'thermocycle', values: {lower_bound_temp:lbT, upper_bound_temp:ubT } });
+
+
+/*
+            socket.emit('command', { module:'thermocycle',
+                                                    value: { "AIR" : [ $( "#slider-airRange" ).slider( "value", 0 ), $( "#slider-airRange" ).slider( "value", 1 ) ],
+                                                             "LIQUID" : [ $( "#slider-liquidRange" ).slider( "value", 0 ), $( "#slider-liquidRange" ).slider( "value", 1 ) ],
+                                                             "TIMER" : timerValue  } });
+*/
+          } else {
+            socket.emit('command', { module:'thermocycle-off'});
+          }
+      });
+  </script>
+
+  <script>
+  //Switches for Dose
+      $('#InputPump').on('switch-change', function (e, data) {
+          socket.emit('command', {state: data.value , module:'toggleControl', relayID:'relay3'});
+      });
+
+      $('#OutputPump').on('switch-change', function (e, data) {
+          socket.emit('command', {state: data.value , module:'toggleControl', relayID:'relay2'});
+      });
+
+      $('#AirPump').on('switch-change', function (e, data) {
+          socket.emit('command', {state: data.value , module:'toggleControl', relayID:'relay4'});
+      });
+  </script>
+
+
+  <script>
+  //Modulation for Incubate slider
+    $(function() {
+    $( "#slider-incubate" ).slider({
+      // range: true,
+      min: 40,
+      max: 100,
+      values: [70],
+      slide: function( event, ui ) {
+        $( "#amount" ).val(ui.values[ 0 ] + "ºF");
+      }
+    });
+    $( "#amount" ).val( $( "#slider-incubate" ).slider( "values", 0 ) + "ºF");
+    $( "#slider-incubate" ).slider("enable");
+  });
+  </script>
+
+  <script>
+  //Modulation for Thermocycle Liquid slider
+    $(function() {
+      $( "#slider-liquidRange" ).slider({
+        range: true,
+        min: 60,
+        max: 87,
+        values: [ 72, 75 ],
+        slide: function( event, ui ) {
+          $( "#amountLiquid" ).val( ui.values[ 0 ] + "ºF - " + ui.values[ 1 ] + "ºF" );
+        }
+      });
+      $( "#amountLiquid" ).val($( "#slider-liquidRange" ).slider( "values", 0 ) +
+        "ºF - " + $( "#slider-liquidRange" ).slider( "values", 1 ) +"ºF" );
+      $( "#slider-liquidRange" ).slider("enable");
+    });
+  </script>
+
+  <script>
+  //Modulation for Thermocycle Air slider
+  $(function() {
+    $( "#slider-airRange" ).slider({
+      range: true,
+      min: 60,
+      max: 87,
+      values: [ 72, 75 ],
+      slide: function( event, ui ) {
+        $( "#amountAir" ).val( ui.values[ 0 ] + "ºF - " + ui.values[ 1 ] + "ºF" ) ;
+      }
+    });
+    $( "#amountAir" ).val($( "#slider-airRange" ).slider( "values", 0 ) +
+      "ºF - " + $( "#slider-airRange" ).slider( "values", 1 ) + "ºF" );
+    $( "#slider-airRange" ).slider("enable");
+  });
+  </script>
+
+  <script>
+  //Modulation for RGB Light sliders
+
+    function hexFromRGB(r, g, b) {
+      var hex = [
+        r.toString( 16 ),
+        g.toString( 16 ),
+        b.toString( 16 )
+      ];
+      $.each( hex, function( nr, val ) {
+        if ( val.length === 1 ) {
+          hex[ nr ] = "0" + val;
+        }
+      });
+      return hex.join( "" ).toUpperCase();
+    }
+    function refreshSwatch() {
+      var red = $( "#red" ).slider( "value" ),
+        green = $( "#green" ).slider( "value" ),
+        blue = $( "#blue" ).slider( "value" ),
+        hex = hexFromRGB( red, green, blue );
+      $( "#swatch" ).css( "background-color", "#" + hex );
+      output_values("RGB", [ $('#RedLight'), $('#GreenLight'), $('#BlueLight') ], [red,green,blue]);
+      //console.log(data.value);
+      //socket.emit('command', {state: data.value , module:'lights', relayID:'Mosfet1', value: red});
+      //socket.emit('command', {state: data.value , module:'lights', relayID:'Mosfet1', value: green});
+      //socket.emit('command', {state: data.value , module:'lights', relayID:'Mosfet1', value: red});
+    }
+    $(function() {
+      $( "#red, #green, #blue" ).slider({
+        orientation: "horizontal",
+        range: "min",
+        max: 255,
+        value: 127,
+        slide: refreshSwatch,
+        change: refreshSwatch
+      });
+      $( "#red" ).slider( "value", 255 );
+      $( "#green" ).slider( "value", 140 );
+      $( "#blue" ).slider( "value", 60 );
+      $("#red").slider("disable");
+      $("#green").slider("disable");
+      $("#blue").slider("disable");
+   });
+  </script>
+
+
+
+  <script>
+  //       $('#arkSchedule').on('switch-change', function (e, data) {
+  //         var panel ={
+  //               waterHeater:{meter: 'liquidTemp', use: false},
+  //               spaceHeater:{meter: 'airTemp', use: false},
+  //               airPump:{meter: 'ph', use: false},
+  //               waterPump:{meter: 'timer', use: false}
+  //           };
+
+
+  //         // var checkOnOff = document.getElementById("checkWaterHeater").checked;
+  //         // if (checkOnOff) {
+  //           var upperLiquidTemp = document.getElementById("waterHeaterHigh").value;
+  //           var lowerLiquidTemp = document.getElementById("waterHeaterLow").value;
+
+  //             panel.waterHeater.use = {
+  //               LE:  {state: "on", value: lowerLiquidTemp},
+  //               GE:  {state: "off", value: upperLiquidTemp}
+  //             };
+
+
+  //         // }
+
+
+  //         // checkOnOff = document.getElementById("checkSpaceHeater").checked;
+  //         // if (checkOnOff) {
+  //         //   var upperAirTemp = document.getElementById("spaceHeaterHigh").value;
+  //         //   var lowerAirTemp = document.getElementById("spaceHeaterLow").value;
+
+
+  //         //     panel.waterHeater.use = {
+  //         //       LE:  {state: "on", value: lowerAirTemp},
+  //         //       GE:  {state: "off", value: upperAirTemp}
+  //         //     };
+  //         // }
+
+  //         // checkOnOff = document.getElementById("checkAirPump").checked;
+  //         // if (checkOnOff) {
+  //         //   var upperOxy = document.getElementById("airPumpHigh").value;
+  //         //   var lowerOxy = document.getElementById("airPumpLow").value;
+  //         //   panel.panel.airPump.use = {
+  //         //     on:  {LE: upperOxy},
+  //         //     off: {GE: lowerOxy}
+  //         //   };
+  //         // }
+
+
+  //         // checkOnOff = document.getElementById("checkWaterPump").checked;
+  //         // if (checkOnOff) {
+  //         //     var onTimeX=document.getElementById("waterPumpHigh").selectedIndex;
+  //         //     var onTimeY=document.getElementById("waterPumpHigh").options;
+  //         //     var onTime = onTimeY[onTimeX].value;
+
+  //         //     var offTimeX=document.getElementById("waterPumpLow").selectedIndex;
+  //         //     var offTimeY=document.getElementById("waterPumpLow").options;
+  //         //     var offTime = offTimeY[offTimeX].value;
+
+  //         //   panel.panel.waterPump.use = {
+  //         //     on:  onTime,
+  //         //     off: offTime
+  //         //   };
+  //         // }
+
+
+  //         var x=document.getElementById("schedule").selectedIndex;
+  //         var y=document.getElementById("schedule").options;
+  //         // alert("Schedule updated: " + y[x].text );
+  //         var timerValue = y[x].value;
+
+  //         if (data.value == false) {
+  //           socket.emit('command', {module: 'stopSchedule'})
+
+  //         }
+  //         socket.emit('command', {'panel': panel, module: 'arkSchedule', interval: '' + timerValue*1000, state: data.value})
+  //         // socket.emit('command', {module: 'sensorSchedule', interval: '' + timerValue*1000})
+
+
+  //       });
+
+  // </script>
+
+
+
+
+
+  <script type="text/javascript">
+
+
+  //     function updateClock ( )
+  //     {
+  //       var currentTime = new Date ( );
+
+  //       var currentHours = currentTime.getHours ( );
+  //       var currentMinutes = currentTime.getMinutes ( );
+  //       var currentSeconds = currentTime.getSeconds ( );
+
+  //       // Pad the minutes and seconds with leading zeros, if required
+  //       currentMinutes = ( currentMinutes < 10 ? "0" : "" ) + currentMinutes;
+  //       currentSeconds = ( currentSeconds < 10 ? "0" : "" ) + currentSeconds;
+
+  //       // Choose either "AM" or "PM" as appropriate
+  //       var timeOfDay = ( currentHours < 12 ) ? "AM" : "PM";
+
+  //       // Convert the hours component to 12-hour format if needed
+  //       currentHours = ( currentHours > 12 ) ? currentHours - 12 : currentHours;
+
+  //       // Convert an hours component of "0" to "12"
+  //       currentHours = ( currentHours == 0 ) ? 12 : currentHours;
+
+  //       // Compose the string for display
+  //       var currentTimeString = currentHours + ":" + currentMinutes + ":" + currentSeconds + " " + timeOfDay;
+
+  //       // Update the time display
+  //       document.getElementById("clock").firstChild.nodeValue = currentTimeString;
+  //       // document.getElementById("date").firstChild.nodeValue = currentDateString;
+
+  //     }
+
+  //     function sensorNow ()
+  //     {
+  //       socket.emit('command', {data:'on', module:'allSensors'});
+
+  //     }
+
+  //
+
+
+
+    function output_values(user_control_id, onoff_controls, values_array)
+    {
+          var red = $( "#red" ).slider( "value" ),
+          green = $( "#green" ).slider( "value" ),
+          blue = $( "#blue" ).slider( "value" );
+          console.log('current colors:', red, green, blue);
+          socket.emit('command', {state: true , module:'lights', relayID:'Mosfet1', values: {red:red, green:green, blue:blue} });
+          //socket.emit('command', {state: true , module:'lights', relayID:'Mosfet2', value: green });
+          //socket.emit('command', {state: true , module:'lights', relayID:'Mosfet3', value: blue });
+      // for the moment do nothing....
+    }
+  </script>
+
+
+
+</body>
+</html>
