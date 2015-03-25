@@ -1,6 +1,6 @@
 //var ioc = require('socket.io-client');
 
-var readPeriod = 2000;
+var readPeriod = 1000;
 
 ////////////////////////////////////////////////////////////////////
 // sensor modules
@@ -9,7 +9,7 @@ var sensors = [
   require('./color/colorimeter'),
   require('./one-wire/temp')
 ];
-  
+
 exports.init = function(valueReporter) {
 
   sensors.forEach(function(sensor) {

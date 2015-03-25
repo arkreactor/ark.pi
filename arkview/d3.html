@@ -1,0 +1,133 @@
+<meta charset="utf-8">
+<style>
+
+svg {
+font: 10px sans-serif;
+}
+
+.line {
+fill: none;
+stroke: #000;
+        stroke-width: 1.5px;
+}
+
+.axis path,
+  .axis line {
+fill: none;
+stroke: #000;
+        shape-rendering: crispEdges;
+  }
+
+</style>
+
+
+<body>
+<script src="/lib/d3.v3.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+var data;
+
+var host = window.document.location.host.replace(/:.*/, '');
+console.log(host);
+//var ws = new WebSocket('ws://' + host + ':5005');
+var socket = io.connect('http://192.168.255.100:8088');
+socket.on('sensor_reading', function(reading){
+  console.log('Sensor Reading: ' + reading);
+  //console.log(event);
+  data.shift();
+  /*var datum = parseInt(event.data);//JSON.parse(event.data);
+  console.log(datum);
+  //console.log(datum.measurement);
+*/
+  rgb = reading.split(',');
+  data.push(parseInt(rgb[2]));
+  tick();
+});
+
+var x, y;
+
+function tick() {
+  //console.log('tick: ' + data);
+
+  var minY = d3.min(data) * 1.5;
+  var maxY = d3.max(data) * 1.5;
+  //var range = maxY - minY;
+/*  y = d3.scale.linear()
+    .domain([minY, maxY])
+    .range([height, 0]);
+    
+  var line = d3.svg.line()
+    .x(function(d, i) { return x(i); })
+    .y(function(d, i) { return y(d); });
+*/
+  // redraw the line, and slide it to the left
+  path
+    .attr("d", line)
+    .attr("transform", null)
+    .transition()
+    //.duration(1000)
+    .ease("linear")
+    .attr("transform", "translate(" + x(-1) + ",0)")
+//    .each("end", tick);
+}
+  
+var n = 40;
+data = d3.range(n).map(function(){return 0});
+
+var margin = {top: 20, right: 20, bottom: 20, left: 40},
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+
+var x = d3.scale.linear()
+  .domain([0, n - 1])
+  .range([0, width]);
+
+var y = d3.scale.linear()
+  .domain([-10, 255])
+  .range([height, 0]);
+
+var line = d3.svg.line()
+  .x(function(d, i) { return x(i); })
+  .y(function(d, i) { return y(d); });
+
+var svg = d3.select("body").append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+svg.append("defs").append("clipPath")
+  .attr("id", "clip")
+  .append("rect")
+  .attr("width", width)
+  .attr("height", height);
+
+svg.append("g")
+  .attr("class", "x axis")
+  .attr("transform", "translate(0," + y(0) + ")")
+  .call(d3.svg.axis().scale(x).orient("bottom"));
+
+svg.append("g")
+  .attr("class", "y axis")
+  .call(d3.svg.axis().scale(y).orient("left"));
+
+var path = svg.append("g")
+  .attr("clip-path", "url(#clip)")
+  .append("path")
+  .datum(data)
+  .attr("class", "line")
+  .attr("d", line);
+
+svg.append("svg:text")
+  .attr("style", "font-size: 20; font-family: Helvetica, sans-serif")
+  .attr("x", width/2)
+  .attr("y", 20)
+  //.text("Atlas Scientific Env-Tmp Temperature Sensor");
+  .text("Colorimeter")
+  .attr("text-anchor", "middle")
+
+tick();
+
+</script>
+
+

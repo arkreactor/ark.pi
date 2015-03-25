@@ -168,12 +168,12 @@
           </tr></tbody></table>
       </div>
 
-     <!--  <div class="well GrowLights center">
-          <h3>GrowLight</h3>
-          <div id="GrowLight" class="switch switch-large" data-on="success" data-off="">
+      <div class="well GrowLights center">
+          <h3>LightCycle</h3>
+          <div id="lightCycle" class="switch switch-large" data-on="success" data-off="">
             <input type="checkbox"/>
           </div>
-      </div> -->
+      </div>
 
   </div>
 
@@ -325,13 +325,11 @@
       $('#Activate').on('switch-change', function (e, data) {
           socket.emit('command', {state: data.value , module:'doseCycle'});
           console.log(data);
-          // socket.emit('command', {  module:'doseCycle' });
       });
 
       $('#Direction').on('switch-change', function (e, data) {
           socket.emit('command', {state: data.value , module:'doseDirection'});
           console.log(data);
-          // socket.emit('command', {  module:'doseCycle' });
       });
 </script>
 
@@ -399,6 +397,12 @@
 
   <script>
    // var socket = io.connect('/');
+
+     $('#lightCycle').on('switch-change', function (e, data) {
+         socket.emit('command', {state: data.value , module:'lightCycle'});
+         console.log(data.value);
+     });
+
   //Switches for lights
       $('#RedLight').on('switch-change', function (e, data) {
           if ( data.value ) {
@@ -411,7 +415,6 @@
           socket.emit('command', {state: data.value , module:'lights', relayID:'Mosfet1', value: $( "#red" ).slider( "value" ) });
       });
 
-      $('#red')
 
       $('#GreenLight').on('switch-change', function (e, data) {
           if ( data.value ) {
@@ -599,8 +602,8 @@
         change: refreshSwatch
       });
       $( "#red" ).slider( "value", 255 );
-      $( "#green" ).slider( "value", 140 );
-      $( "#blue" ).slider( "value", 60 );
+      $( "#green" ).slider( "value", 200 );
+      $( "#blue" ).slider( "value", 150 );
       $("#red").slider("disable");
       $("#green").slider("disable");
       $("#blue").slider("disable");

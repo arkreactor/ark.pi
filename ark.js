@@ -1,4 +1,14 @@
 
+function blastToClients(name, payload) {
+  connections.forEach(function(c) {
+    c.emit(name, payload);
+  });
+}
+
+function blastSensorReadingToClients(payload) {
+  blastToClients('sensor_reading', payload);
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 // temperature and heating
@@ -10,6 +20,12 @@ thermocycleState = false;
 
 function onSensorReading(msg) {
   if (msg.data.Fahrenheit) onTempReading(msg);
+  if (msg.data.rgb) onColorReading(msg);
+}
+
+function onColorReading(msg) {
+  console.log('color reading');
+  blastSensorReadingToClients(msg.data.rgb.value);
 }
 
 function onTempReading(msg) {
@@ -122,37 +138,51 @@ var g_cronClient = null;
 
 var connections = [];
 
-// var sensa = ioc.connect('http://50.18.176.3');
-// sensa.on('connect', function(){
-//   connections.push(sensa);
-// });
 
-// sensa.on('command', function(data){
-//   if ( data.module === "lightCycle" ) {
-//         serialPort.write("C\n");
-//   // } else if (data.module === "airPump") {
+/////////////////////////////////
+/*REMOTE SOCKET*/
 
-//   //   controllerStateObject["relay4"] = data.state;
-//   //   relays.write_value("relay4",data.state);
+var sensa = ioc.connect('http://sensa.io:8888');
+sensa.on('connect', function(){
+  connections.push(sensa);
+});
 
-//   }
+sensa.on('command', function(data){
+  console.log(data);
+  if(data.module === "lights" && data.values) {
+    console.log("light command receive: "+data.values.red+" "+data.values.green+" "+data.values.blue+"\n");
+    if (data.relayID === 'Mosfet1') {
+      arduino.analogWrite(10, data.values.red);
+      arduino.analogWrite(9, data.values.green);
+      arduino.analogWrite(11, data.values.blue);
+    }
 
-// });
+  } else if ( data.module === "doseCycle" ) {
+      if (data.state == true) {
+        arduino.digitalWrite(3, true); // pump on
+        // arduino.digitalWrite(4, false);
+      }
+      else {
+        arduino.digitalWrite(3, false); // pump off
+        // arduino.digitalWrite(4, false);
+      }
 
-// gpio.setup(18, gpio.DIR_OUT, write);
-// gpio.setup(23, gpio.DIR_OUT, write);
+  } else if (data.module == "doseDirection") {
+    if (data.state == true) {
+      arduino.digitalWrite(4, false); //forward
+    }
+    else {
+      arduino.digitalWrite(4, true); //backward
+    }
 
-// function write(){
-//   gpio.write(18, false, function(err){
-//     if (err) throw err;
-//     console.log('Written to pin');
-//   });
-//   gpio.write(23, false, function(err){
-//     if (err) throw err;
-//     console.log('Written to pin');
-//   })
-// }
+  }
 
+});
+
+
+
+//////////////////////////////////////////
+/*LOCAL SOCKET */
 
 io.sockets.on('connection', function (socket) {
   connections.push(socket);

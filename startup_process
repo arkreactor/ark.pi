@@ -1,0 +1,24 @@
+Download Raspbian: http://www.raspberrypi.org/downloads/
+Load onto SD: http://elinux.org/RPi_Easy_SD_Card_Setup
+sudo apt-get update
+sudo apt-get upgrade
+
+Install Node and Enable GPIO Access:
+https://learn.adafruit.com/node-embedded-development/installing-node-dot-js
+
+Enable one-wire sensor:
+sudo modprobe w1-gpio
+sudo modprobe w1-therm
+
+Add the following to /boot/config.txt
+#enable one wire temperature sensor on pin 4
+dtoverlay=w1-gpio,gpiopin=4
+
+Disable login on pinout UART:
+sudo vi /etc/inittab
+Add # in front of:
+T0:23:respawn:/sbin/getty -L ttyAMA0 115200 vt100
+
+
+Install Hamachi:
+http://www.instructables.com/id/Logmein-Hamachi-for-LinuxBeagleboneRaspberry-Pi/
