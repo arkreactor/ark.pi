@@ -9,10 +9,10 @@ https://learn.adafruit.com/node-embedded-development/installing-node-dot-js
 Enable one-wire sensor:
 sudo modprobe w1-gpio
 sudo modprobe w1-therm
-
 Add the following to /boot/config.txt
 #enable one wire temperature sensor on pin 4
 dtoverlay=w1-gpio,gpiopin=4
+-Reboot
 
 Disable login on pinout UART:
 sudo vi /etc/inittab
@@ -20,8 +20,16 @@ Add # in front of:
 T0:23:respawn:/sbin/getty -L ttyAMA0 115200 vt100
 
 
-Install Hamachi:
+Setup Hamachi:
 http://www.instructables.com/id/Logmein-Hamachi-for-LinuxBeagleboneRaspberry-Pi/
 
-Install Bluetooth:
+Setup Bluetooth:
+http://www.elinux.org/RPi_Bluetooth_LE
 http://www.raspberrypi.org/forums/viewtopic.php?p=521067
+http://blog.kugelfish.com/2012/10/look-ma-no-wires-raspberry-pi-bluetooth.html
+https://learn.adafruit.com/pibeacon-ibeacon-with-a-raspberry-pi/setting-up-the-pi
+http://www.raspberrypi.org/forums/viewtopic.php?t=92900
+
+Setup Database:
+Mongo - http://c-mobberley.com/wordpress/2013/10/14/raspberry-pi-mongodb-installation-the-working-guide/
+

@@ -29,18 +29,15 @@ var data;
 
 var host = window.document.location.host.replace(/:.*/, '');
 console.log(host);
-//var ws = new WebSocket('ws://' + host + ':5005');
-var socket = io.connect('http://192.168.255.100:8088');
+var ws = new WebSocket('ws://' + host + ':5005');
+//var socket = io.connect('http://192.168.255.100:8088');
 socket.on('sensor_reading', function(reading){
   console.log('Sensor Reading: ' + reading);
-  //console.log(event);
   data.shift();
-  /*var datum = parseInt(event.data);//JSON.parse(event.data);
-  console.log(datum);
-  //console.log(datum.measurement);
-*/
-  rgb = reading.split(',');
-  data.push(parseInt(rgb[2]));
+  var datum = parseFloat(event.data);
+  //rgb = reading.split(',');
+  //data.push(parseInt(rgb[2]));
+  data.push(datum);
   tick();
 });
 

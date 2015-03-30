@@ -1,6 +1,6 @@
 //var ioc = require('socket.io-client');
 
-var readPeriod = 1000;
+var readPeriod = 5000;
 
 ////////////////////////////////////////////////////////////////////
 // sensor modules

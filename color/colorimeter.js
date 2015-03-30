@@ -14,7 +14,7 @@ exports.init = function(callback) {
 
   colorimeter.on("data", function (data) {
     var msg = util.makeSensorMessage('Opacity', 'rgb', data, 'RGB');
-    console.log(msg);
+    //console.log(msg);
     if (callbackFunc) callbackFunc(msg);
   });
 
