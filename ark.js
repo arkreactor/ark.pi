@@ -1,3 +1,46 @@
+//////////////////////////////////////////////////////////////////////////////
+// cloud database
+var cradle = quire('cradle');
+var db = new(cradle.Connection)('http://sensa.io');
+var dbActions = db.database('actions');
+var dbReadings = db.database('readings);
+
+function saveReading(msg) {
+  if (!dbReadings || !dbReadings.save) {
+    return false;
+  }
+
+  // TODO: check msg has timestamp
+
+  dbReadings.save(msg, function (err, res) {
+    if (err) {
+      console.log('error creating reading record');
+    } else {
+      console.log('reading record created');
+    }
+  });
+}
+
+// error is a string describing the problem
+// could substitute error codes--read up on enums in js
+function saveAction(msg, error) {
+  if (!dbActions || !dbActions.save) {
+    return false;
+  }
+
+  // TODO: check msg has timestamp
+  // TODO: incorporate success or failure
+
+  dbActionss.save(msg, function (err, res) {
+    if (err) {
+      console.log('error creating action record');
+    } else {
+      console.log('action record created');
+    }
+  });
+}
+
+///////////////////////////////////////////////////////////////////////////
 
 function blastToClients(name, payload) {
   connections.forEach(function(c) {
@@ -25,12 +68,15 @@ function onSensorReading(msg) {
 
 function onColorReading(msg) {
   console.log('color reading');
-  blastSensorReadingToClients(msg.data.rgb.value);
+  //blastSensorReadingToClients(msg.data.rgb.value);
+  saveReading(msg);
 }
 
 function onTempReading(msg) {
   var temp = msg.data.Fahrenheit.value;
   var heaterOn = false;
+
+  saveReading(msg);
 
 //  console.log(temp);
   console.log('Fahrenheit: ' + temp);
@@ -100,16 +146,16 @@ var express = require('express')
 
 
 // app.configure(function(){
-	app.set('port', 8088);
+  app.set('port', 8088);
   app.set('views', __dirname + '/arkview');
   app.engine('html', require('ejs').renderFile);
-	//app.set('view engine', 'jade');
-	app.locals.pretty = false;
-	// app.use(express.bodyParser());
-	// app.use(express.cookieParser());
-	// app.use(express.methodOverride());
-	app.use(require('stylus').middleware({ src: __dirname + '/public'}));
-	app.use(express.static(__dirname +'/public'));
+  //app.set('view engine', 'jade');
+  app.locals.pretty = false;
+  // app.use(express.bodyParser());
+  // app.use(express.cookieParser());
+  // app.use(express.methodOverride());
+  app.use(require('stylus').middleware({ src: __dirname + '/public'}));
+  app.use(express.static(__dirname +'/public'));
 // });
 
 // app.configure('development', function(){
@@ -119,7 +165,7 @@ var express = require('express')
 require('./router')(app);
 
 server.listen(app.get('port'), function(){
-	console.log("Express server listening on port " + app.get('port'));
+  console.log("Express server listening on port " + app.get('port'));
 });
 
 
@@ -136,11 +182,12 @@ console.log(stateStr);
 //Variable not defined locally; global scope
 var g_cronClient = null;
 
+// connections to remote server
 var connections = [];
 
 
-/////////////////////////////////
-/*REMOTE SOCKET*/
+////////////////////////////////////////////////////////////////////////////
+// REMOTE SOCKET
 
 var sensa = ioc.connect('http://sensa.io:8888');
 sensa.on('connect', function(){
@@ -156,6 +203,7 @@ sensa.on('command', function(data){
       arduino.analogWrite(9, data.values.green);
       arduino.analogWrite(11, data.values.blue);
     }
+  saveAction(data);
 
   } else if ( data.module === "doseCycle" ) {
       if (data.state == true) {
@@ -167,6 +215,7 @@ sensa.on('command', function(data){
         // arduino.digitalWrite(4, false);
       }
 
+  saveAction(data);
   } else if (data.module == "doseDirection") {
     if (data.state == true) {
       arduino.digitalWrite(4, false); //forward
@@ -174,7 +223,11 @@ sensa.on('command', function(data){
     else {
       arduino.digitalWrite(4, true); //backward
     }
+    saveAction(data);
 
+  } else {
+    // unrecognized action
+    saveAction(data, 'Unrecognized action');
   }
 
 });
@@ -209,9 +262,7 @@ io.sockets.on('connection', function (socket) {
       	arduino.analogWrite(9, data.values.green);
 		    arduino.analogWrite(11, data.values.blue);
 	  }
-      	        //serialPort.write("L"+data.values.red+" "+data.values.green+" "+data.values.blue+"\n");
-      //if (data.relayID=== 'Mosfet2') arduino.analogWrite(9, data.values.green);
-      //if (data.relayID === 'Mosfet3') arduino.analogWrite(11, data.values.blue);
+      	 
 
     } else if ( data.module === "doseCycle" ) {
         if (data.state == true) {

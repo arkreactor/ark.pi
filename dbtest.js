@@ -1,5 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
-
+var cradle = require('cradle');
+var db = new(cradle.Connection)('http://sensa.io').database('readings');
 
 
 var sensornode = require('./sensornode');
@@ -12,27 +13,46 @@ function onSensorReading(msg) {
 
 function onTempReading(msg) {
   var temp = msg.data.Fahrenheit.value;
-  var entry = new Reading({id:'temp', date:Date.now(), reading:temp});
+  if(!db || !db.save) {
+    console.log('db not ready');
+    return;
+  }
+  db.save({
+    id: 'temp',
+    date: Date.now(),
+    data: temp,//75+Math.random(),
+    unit: 'F'
+  }, function (err, res) {
+    if (err) {
+      console.log('error creating record');
+    } else {
+        console.log('record created');
+    }
+  });
+
+  /*var entry = new Reading({id:'temp', date:Date.now(), reading:temp});
   if (db) {
     entry.save(function(err, entry) {
       if (err) return console.error(err);
       console.log('saved ' + temp);
     });
-  }
+  }*/
 }
 
 function onColorReading(msg) {
-  var rgb = msg.data.rgb.value;
+  /*var rgb = msg.data.rgb.value;
   var entry = new Reading({id:'color', date:Date.now(), reading:rgb});
   if (db) {
     entry.save(function(err, entry) {
       if (err) return console.error(err);
       console.log('saved ' + rgb);
     });
-  }
+  }*/
 }
 
-var mongoose = require('mongoose');
+
+
+/*var mongoose = require('mongoose');
 mongoose.connect('mongodb://sensa.io/arkpi');
 
 var db = mongoose.connection;
@@ -48,7 +68,7 @@ var ReadingSchema = mongoose.Schema({
 });
 
 var Reading = mongoose.model('reading', ReadingSchema);
-
+*/
 
 //////////////////////////////////////////////////////////////////////////////
 // Web Server
