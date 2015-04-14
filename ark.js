@@ -1,9 +1,9 @@
 //////////////////////////////////////////////////////////////////////////////
 // cloud database
-var cradle = quire('cradle');
+var cradle = require('cradle');
 var db = new(cradle.Connection)('http://sensa.io');
 var dbActions = db.database('actions');
-var dbReadings = db.database('readings);
+var dbReadings = db.database('readings');
 
 function saveReading(msg) {
   if (!dbReadings || !dbReadings.save) {
@@ -55,8 +55,9 @@ function blastSensorReadingToClients(payload) {
 
 ///////////////////////////////////////////////////////////////////////////////
 // temperature and heating
-
+/*
 var sensornode = require('./sensornode');
+sensornode.init(onSensorReading);
 
 gTemp = {min:70, max:78};
 thermocycleState = false;
@@ -76,9 +77,9 @@ function onTempReading(msg) {
   var temp = msg.data.Fahrenheit.value;
   var heaterOn = false;
 
+  blastSensorReadingToClients(temp);
   saveReading(msg);
 
-//  console.log(temp);
   console.log('Fahrenheit: ' + temp);
 
   if (thermocycleState) {
@@ -93,45 +94,90 @@ function onTempReading(msg) {
   var heaterLevel = 50;
   console.log('thermocycleState = ' + thermocycleState);
   console.log('heating on = ' + heaterOn);
-  arduino.analogWrite(5, heaterOn? heaterLevel: 0);
+  // arduino.analogWrite(5, heaterOn? heaterLevel: 0);
 }
-
-sensornode.init(onSensorReading);
+*/
 
 ////////////////////////////////////////////////////////////////////////////
 // // var gpio = require('rpi-gpio');
 // var relays = require('./controllers/relays');
-/*
+
 var serialport = require("serialport");
 var SerialPort = serialport.SerialPort;
 
-        serialPort = new SerialPort('/dev/ttyACM0', {
-          baudrate: 9600,
-          parser: serialport.parsers.readline("\n")
-        });
-
-        serialPort.on("open", function () {
-          console.log('serial port opened');
-        });
-*/
-var ArduinoFirmata = require('arduino-firmata');
-var arduino = new ArduinoFirmata();
-
-arduino.connect(); // use default arduino
-// arduino.connect('/dev/ttyACM0'); //Bone Serial
-arduino.connect('/dev/ttyACM0'); //Pi2 Serial Port Upper Left
-
-arduino.on('connect', function(){
-
-  console.log("board version"+arduino.boardVersion);
-  arduino.pinMode(3, ArduinoFirmata.OUTPUT);
-  arduino.pinMode(4, ArduinoFirmata.OUTPUT);
-  arduino.pinMode(5, ArduinoFirmata.OUTPUT);
-  arduino.pinMode(9, ArduinoFirmata.OUTPUT);
-  arduino.pinMode(10, ArduinoFirmata.OUTPUT);
-  arduino.pinMode(11, ArduinoFirmata.OUTPUT);
-
+serialPort = new SerialPort('/dev/ttyACM0', {
+  baudrate: 38400,
+  parser: serialport.parsers.readline("\n")
 });
+
+serialPort.on("error", function(err) {
+  console.log('error opening serial port');
+});
+
+serialPort.on("open", function () {
+  console.log('serial port opened');
+
+  /*setTimeout(function() {
+    serialPort.write('{setEntry:{index:0,msMeasurementPeriod:0}}\n');
+    serialPort.write('{setEntry:{index:1,msMeasurementPeriod:0}}\n');
+  }, 4000);*/
+
+  serialPort.on('data', function(data) {
+    console.log(data);
+    try {
+      msg = JSON.parse(data);
+      if (msg.measurement != undefined) {
+        //handle reading
+        //onSensorReading(msg);
+        blastToClients('sensor_report', msg);
+      }
+    } catch(e) {
+      console.log('bad json from serial port');
+    }
+  });
+});
+
+
+// wrap aggroserver's pin writes to look like firmata
+// these methods will be replaced by configuring actuators on the arduino
+var arduino = {};
+
+arduino.digitalWrite = function(pin, value) {
+  if (value === true) value = 1;
+  else if (value === false) value = 0;
+  msg = {writeD: {pin:pin, value:value}};
+  serialPort.write(JSON.stringify(msg) + '\n');
+}
+
+arduino.analogWrite = function(pin, value) {
+  msg = {writeA: {pin:pin, value:value}};
+  serialPort.write(JSON.stringify(msg) + '\n');
+}
+
+
+//var ArduinoFirmata = require('arduino-firmata');
+//var arduino = new ArduinoFirmata();
+
+// arduino.connect(); // use default arduino
+// arduino.connect('/dev/ttyACM0'); //Bone Serial
+// arduino.connect('/dev/ttyACM0'); //Pi2 Serial Port Upper Left
+
+// arduino.on('connect', function(){
+
+  // console.log("board version"+arduino.boardVersion);
+  // arduino.pinMode(2, ArduinoFirmata.OUTPUT); //Relay 1
+  // arduino.digitalWrite(2, true);
+  // arduino.pinMode(3, ArduinoFirmata.OUTPUT); //Relay 2
+  // arduino.digitalWrite(3, true);
+  // arduino.pinMode(4, ArduinoFirmata.OUTPUT); //Relay 3
+  // arduino.digitalWrite(4, true);
+  // arduino.pinMode(5, ArduinoFirmata.OUTPUT); //Relay 4
+  // arduino.digitalWrite(5, true);
+  // arduino.pinMode(9, ArduinoFirmata.OUTPUT); //Green Indicator
+  // arduino.pinMode(10, ArduinoFirmata.OUTPUT); //Red Indicator
+  // arduino.pinMode(11, ArduinoFirmata.OUTPUT); //Blue Indicator
+
+// });
 
 
 
@@ -198,34 +244,50 @@ sensa.on('command', function(data){
   console.log(data);
   if(data.module === "lights" && data.values) {
     console.log("light command receive: "+data.values.red+" "+data.values.green+" "+data.values.blue+"\n");
-    if (data.relayID === 'Mosfet1') {
-      arduino.analogWrite(10, data.values.red);
-      arduino.analogWrite(9, data.values.green);
-      arduino.analogWrite(11, data.values.blue);
+    if (data.relayID === 'Indicators') {
+      // arduino.analogWrite(10, data.values.red);
+      // arduino.analogWrite(9, data.values.green);
+      // arduino.analogWrite(11, data.values.blue);
     }
-  saveAction(data);
+    if (data.relayID === 'Mosfet1') serialPort.write("L"+data.values.red+" "+data.values.green+" "+data.values.blue+"\n");
+    if (data.relayID=== 'Mosfet2') serialPort.write("G"+data.value+"\r");
+    if (data.relayID === 'Mosfet3') serialPort.write("B"+data.value+"\r");
+    saveAction(data);
 
-  } else if ( data.module === "doseCycle" ) {
+  } else if ( data.module === "RecircPump" ) {
       if (data.state == true) {
-        arduino.digitalWrite(3, true); // pump on
-        // arduino.digitalWrite(4, false);
+        arduino.digitalWrite(2, true);  //pump on
+        arduino.digitalWrite(4, false);
       }
       else {
-        arduino.digitalWrite(3, false); // pump off
-        // arduino.digitalWrite(4, false);
+        arduino.digitalWrite(2, false); //pump off
+        arduino.digitalWrite(4, false);
       }
 
-  saveAction(data);
-  } else if (data.module == "doseDirection") {
+    saveAction(data);
+  } else if (data.module == "AirPump") {
     if (data.state == true) {
-      arduino.digitalWrite(4, false); //forward
+      //serialPort.write("air-on\n");
+      arduino.digitalWrite(3, true); //forward
     }
     else {
-      arduino.digitalWrite(4, true); //backward
+      //serialPort.write("air-off\n");
+      arduino.digitalWrite(3, false); //backward
     }
     saveAction(data);
 
-  } else {
+  } else if (data.module == "growLight") {
+    if (data.state == true) {
+      serialPort.write("air-on\n");
+
+      // arduino.digitalWrite(4, true); //forward
+    }
+    else {
+      // arduino.digitalWrite(4, false); //backward
+    }
+    saveAction(data);
+
+  }else {
     // unrecognized action
     saveAction(data, 'Unrecognized action');
   }
@@ -250,39 +312,97 @@ io.sockets.on('connection', function (socket) {
   });
 
 
-  var sensors_map = { "liquidTemp" : "none", "humidityi2c" : "none", "ph" : "none" };
+  // var sensors_map = { "liquidTemp" : "none", "humidityi2c" : "none", "ph" : "none" };
 
   socket.on('command', function (data) {
   	console.log(data);
 
-    if(data.module === "lights" && data.values) {
-      console.log("light command receive: "+data.values.red+" "+data.values.green+" "+data.values.blue+"\n");
-      if (data.relayID === 'Mosfet1') {
-      	arduino.analogWrite(10, data.values.red);
-      	arduino.analogWrite(9, data.values.green);
-		    arduino.analogWrite(11, data.values.blue);
-	  }
-      	 
-
-    } else if ( data.module === "doseCycle" ) {
+    if ( data.module === "SensaOn" ) {
         if (data.state == true) {
-          arduino.digitalWrite(3, true); // pump on
-          // arduino.digitalWrite(4, false);
+          serialPort.write('{setEntry:{index:0,msMeasurementPeriod:2000}}\n{setEntry:{index:1,msMeasurementPeriod:2000}}\n');
         }
         else {
-          arduino.digitalWrite(3, false); // pump off
-          // arduino.digitalWrite(4, false);
+          serialPort.write('{setEntry:{index:0,msMeasurementPeriod:0}}\n{setEntry:{index:1,msMeasurementPeriod:0}}\n');
         }
 
-    } else if (data.module == "doseDirection") {
+    } else if (data.module === "lights" && data.values) {
+      if (data.relayID === 'Indicators') {
+        console.log("light command receive: "+data.values.red+" "+data.values.green+" "+data.values.blue+"\n");
+        arduino.analogWrite(9, data.values.green);
+      	arduino.analogWrite(10, data.values.red);
+		    arduino.analogWrite(11, data.values.blue);
+	     }
+
+
+    } else if ( data.module === "LoadPump" ) {
+        if (data.state == true) {
+          arduino.digitalWrite(22, true); // RelayHighV 1 for plugin pump - on
+        }
+        else {
+          arduino.digitalWrite(22, false); // RelayHighV 1 plugin pump - off
+        }
+
+    } else if ( data.module === "RecircValve" ) {
+        if (data.state == true) {
+          arduino.digitalWrite(26, false); // RelayLowV 1 NO valve - open
+        }
+        else {
+          arduino.digitalWrite(26, true); // RelayLowV 1 NO valve - closed
+        }
+
+    } else if ( data.module === "DrainValve" ) {
+        if (data.state == true) {
+          arduino.digitalWrite(27, true); // RelayLowV 2 NC valve - open
+        }
+        else {
+          arduino.digitalWrite(27, false); // RelayLowV 2 NO valve - closed
+        }
+
+    } else if ( data.module === "DispenseValve" ) {
+        if (data.state == true) {
+          arduino.digitalWrite(28, true);  //RelayLowV 3 Dispense Valve - open
+
+        }
+        else {
+          arduino.digitalWrite(28, false);  //RelayLowV 3 Dispense Valve - closed
+        }
+
+    }else if ( data.module === "RecircPump" ) {
+        if (data.state == true) {
+          arduino.digitalWrite(29, true);  // Recirc pump on
+          arduino.digitalWrite(27, false); //RelayLowV NO valve - open
+          arduino.digitalWrite(26, false); //RelayLowV NC valve - closed
+        }
+        else {
+          // arduino.digitalWrite(2, true); // pump off
+          arduino.digitalWrite(29, false); // Recirc pump off
+        }
+
+    } else if (data.module == "AirPump") {
       if (data.state == true) {
-        arduino.digitalWrite(4, false); //forward
+        // arduino.digitalWrite(3, false); //forward
       }
       else {
-        arduino.digitalWrite(4, true); //backward
+        // arduino.digitalWrite(3, true); //backward
       }
 
-    } else if ( data.module === "thermocycle-off" ) {
+    } else if (data.module == "growLight") {
+      if (data.state == true) {
+        // arduino.digitalWrite(4, false); //forward
+      }
+      else {
+        // arduino.digitalWrite(4, true); //backward
+      }
+
+    } else if (data.module == "DosePump") {
+      if (data.state == true) {
+        // arduino.digitalWrite(5, false); //forward
+      }
+      else {
+        // arduino.digitalWrite(5, true); //backward
+      }
+
+    }else if ( data.module === "thermocycle-off" ) {
         //serialPort.write("t\n");
         thermocycleState = false;
         //resetThermocycle();
