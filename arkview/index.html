@@ -27,11 +27,9 @@
         <img src="/img/ark-reactor.png" style="height: 25px; width: auto; float: left; padding: 12px">
 
         <ul class="nav nav-pills">
-          <!-- <li style="padding: 5px"><a href="#Sensa" data-toggle="pill">Sense</a></li> -->
           <li style="padding: 5px" class="active"><a href="#Alive" data-toggle="pill">Control</a></li>
           <li style="padding: 5px"><a href="#Load" data-toggle="pill">Load</a></li>
-          <!-- <li style="padding: 5px"><a href="#Temp" data-toggle="pill">Temp</a></li>
-          <li style="padding: 5px"><a href="#Dose" data-toggle="pill">Dose</a></li> -->
+          <!-- <li style="padding: 5px"><a href="#Graph" data-toggle="pill">Sense</a></li> -->
           <!--<li><button type="button" id="sensorNow" class="btn btn-primary">Ark</button></li>-->
        </ul>
      </div>
@@ -41,97 +39,67 @@
 
   <div class="tab-content">
 
-    <div class="tab-pane" id="Sensa">
-
-      <div id="sensaChart" style="width: 100%; height: 340px;">
-
-
-      </div>
-
-     <!--  <table><tbody><tr>
-        <td style="vertical-align: top">
-            <div class="well containedSensa center">
-                  <div id="Activate" class="switch" data-on="success" data-off="">
-                    <input type="checkbox"/>
-                  </div>
-                    <table><tbody>
-                      <tr>
-                        <td><h4>Insulation Temp</h4></td>
-                        <td><h4 id ="liquidTemp" class="sensa">&nbsp;</h4></td></tr>
-                      <tr>
-                        <td><h4>Air Temp</h4></td>
-                        <td><h4 id ="tempi2c" class="sensa">&nbsp;</h4></td></tr>
-                      <tr>
-                        <td><h4>Humidity</h4></td>
-                        <td><h4 id ="humidityi2c" class="sensa">&nbsp;</h4></td></tr>
-                      <tr>
-                        <td><h4>CO2</h4></td>
-                        <td><h4 id ="CO2" class="sensa">&nbsp;</h4></td></tr>
-                      <tr>
-                        <td><h4>Culture Temp</h4></td>
-                        <td><h4 id ="liquidTemp" class="sensa">&nbsp;</h4></td></tr>
-                      <tr>
-                        <td><h4>Sonication</h4></td>
-                        <td><h4 id ="sonication" class="sensa">&nbsp;</h4></td></tr>
-                      <tr>
-                        <td><h4>Optical Density</h4></td>
-                        <td><h4 id ="optic" class="sensa">&nbsp;</h4></td></tr>
-                      <tr>
-                        <td><h4>Color</h4></td>
-                        <td><h4 id ="RGBColor" class="sensa">&nbsp;</h4></td></tr>
-                      <tr>
-                        <td><h4>pH</h4></td>
-                        <td><h4 id ="ph" class="sensa">&nbsp;</h4></td></tr>
-                      <tr>
-                        <td><h4>dOxy</h4></td>
-                        <td><h4 id ="doxy" class="sensa">&nbsp;</h4></td></tr>
-                      <tr>
-                        <td><h4>ORP</h4></td>
-                        <td><h4 id ="orp" class="sensa">&nbsp;</h4></td></tr>
-                      <tr>
-                        <td><h4>EC</h4></td>
-                        <td><h4 id ="doxy" class="sensa">&nbsp;</h4></td></tr>
-                    </tbody></table>
-            </div>
-        </td>
-        <td style="vertical-align: top;">
-            <div class="containedGraph">
-              <center>
-               <iframe id="igraph" src="http://plot.ly/~streaming-demos/52/" width="700" height="438" style="margin: 40px auto" seamless="seamless" scrolling="no"></iframe>
-              </center> -->
-
-              <!--<center>-->
-              <!--  <iframe id="igraph" src="https://plot.ly/~gmon01/32" width="700" height="438" style="margin: 40px auto" seamless="seamless" scrolling="no"></iframe>-->
-              <!--</center>-->
-     <!--        </div>
-        </td>
-      </tr></tbody></table>-->
-    </div>
-
-    <div class="tab-pane" id="Load">
-
-      <div class ="well Activate center">
-            <h4>Load Pump</h4>
-            <div id="LoadPump" class="switch switch-large" data-on="success" data-off="">
-              <input type="checkbox"/>
-            </div>
-            <h4>Recirc Valve</h4>
-            <div id="RecircValve" class="switch switch-large" data-on-label="Closed" data-off-label="Open" data-on="danger" data-off="success">
-                  <input type="checkbox"/>
-            </div>
-            <h4>Drain Valve</h4>
-            <div id="DrainValve" class="switch switch-large" data-on-label="Open" data-off-label="Closed" data-on="success" data-off="danger">
-                  <input type="checkbox"/>
-            </div>
-
-      </div>
-    </div>
-
-
     <div class="tab-pane active" id="Alive">
 
       <table>
         <tr>
+          <td>
+            <div class="well Incubate center">
+                <table><tbody>
+                  <tr>
+                    <td>
+                      <h4>Temperature</h4>
+                    </td>
+                    <td>
+                        <h4 id ="liquidTemp" class="sensa">&nbsp;</h4>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <h4>pH</h4>
+                    </td>
+                    <td>
+                      <h4 id ="pH" class="sensa">&nbsp;</h4>
+                    </td>
+                  </tr></tbody></table>
+                <div id="SensaOn" class="switch switch-large" data-on="success" data-off="">
+                      <input type="checkbox"/>
+                </div>
+            </div>
+            <div class="well Incubate center">
+            <h4>Incubate</h4>
+              <div class="fieldSize">
+                 <p>
+                 <input type="text" id="amountLiquid" style="border:0; color:#00CCFF; font-weight:bold; width=100px">
+                 </p>
+
+                 <div id="slider-liquidRange"></div>
+              </div>
+              <div id="Thermocycle" class="switch switch-large" data-on="success" data-off="">
+                    <input type="checkbox"/>
+              </div>
+            </div>
+            <!-- <div class="well Incubate center">
+                <h3>Incubation Temp</h3>
+                <input type="text" id="amount" style="border:0; color:#00CCFF; font-weight:bold; width: 66px; margin-bottom: 0px">
+                <div id="slider-incubate"></div>
+                <div id="Incubate" class="switch" data-on="success" data-off="">
+                      <input type="checkbox"/>
+                </div>
+            </div> -->
+            <!--    <div class="fieldSize">
+                  <div>
+                    <select id="thermocycle-schedule">
+                              <option value="5" >5 seconds</option>
+                              <option value="30" >30 seconds</option>
+                              <option value="60" >60 seconds</option>
+                              <option value="300" >5 minutes</option>
+                              <option value="600" >10 minutes</option>
+                    </select>
+                  </div>
+               </div> -->
+          </td>
+
           <td>
             <div class="well Activate center">
               <h4>Recirc</h4>
@@ -150,7 +118,7 @@
 
             <div class="well Activate center">
               <h4>Dispense</h4>
-                    <div id="DispenseValve" class="switch switch-large" data-on="success" data-off="">
+                    <div id="DispenseValve" class="switch switch-large" data-on-label="Open" data-off-label="Closed" data-on="success" data-off="danger">
                     <input type="checkbox"/>
                    </div>
             </div>
@@ -259,62 +227,47 @@
                 </table>
             </div>
           </td>
-
-          <td>
-            <div class="well Incubate center">
-              <table><tbody>
-                <tr>
-                  <td><h4>Temperature</h4></td>
-                  <td><h4 id ="liquidTemp" class="sensa">&nbsp;</h4></td></tr>
-                <tr>
-                  <td><h4>pH</h4></td>
-                  <td><h4 id ="pH" class="sensa">&nbsp;</h4></td></tr>
-                <tr>
-                  <td>
-                    <div id="SensaOn" class="switch switch-large" data-on="success" data-off="">
-                          <input type="checkbox"/>
-                    </div>
-                  </td>
-                </tr>
-              </tbody></table>
-            </div>
-            <div class="well Incubate center">
-            <h3>Incubate</h3>
-              <div class="fieldSize">
-                 <p>
-                 <input type="text" id="amountLiquid" style="border:0; color:#00CCFF; font-weight:bold; width=100px">
-                 </p>
-
-                 <div id="slider-liquidRange"></div>
-              </div>
-              <div id="Thermocycle" class="switch switch-large" data-on="success" data-off="">
-                    <input type="checkbox"/>
-              </div>
-            </div>
-            <!-- <div class="well Incubate center">
-                <h3>Incubation Temp</h3>
-                <input type="text" id="amount" style="border:0; color:#00CCFF; font-weight:bold; width: 66px; margin-bottom: 0px">
-                <div id="slider-incubate"></div>
-                <div id="Incubate" class="switch" data-on="success" data-off="">
-                      <input type="checkbox"/>
-                </div>
-            </div> -->
-            <!--    <div class="fieldSize">
-                  <div>
-                    <select id="thermocycle-schedule">
-                              <option value="5" >5 seconds</option>
-                              <option value="30" >30 seconds</option>
-                              <option value="60" >60 seconds</option>
-                              <option value="300" >5 minutes</option>
-                              <option value="600" >10 minutes</option>
-                    </select>
-                  </div>
-               </div> -->
-          </td>
-
         </tr>
       </table>
 
+    </div>
+
+    <div class="tab-pane" id="Load">
+
+      <div class ="well Activate center">
+            <h4>Load Pump</h4>
+            <div id="LoadPump" class="switch switch-large" data-on="success" data-off="">
+              <input type="checkbox"/>
+            </div>
+            <h4>Recirc Valve</h4>
+            <div id="RecircValve" class="switch switch-large" data-on-label="Closed" data-off-label="Open" data-on="danger" data-off="success">
+                  <input type="checkbox"/>
+            </div>
+            <h4>Drain Valve</h4>
+            <div id="DrainValve" class="switch switch-large" data-on-label="Open" data-off-label="Closed" data-on="success" data-off="danger">
+                  <input type="checkbox"/>
+            </div>
+            <h4>Recirc Pump</h4>
+            <div id="Recirc" class="switch switch-large" data-on="success" data-off="">
+                <input type="checkbox"/>
+            </div>
+
+      </div>
+    </div>
+
+    <div class="tab-pane" id="Graph">
+
+      <!-- <div id="sensaChart" style="width: 100%; height: 340px;"></div> -->
+
+      <!-- <div class="containedGraph">
+        <center>
+         <iframe id="igraph" src="http://plot.ly/~streaming-demos/52/" width="700" height="438" style="margin: 40px auto" seamless="seamless" scrolling="no"></iframe>
+        </center>
+
+        <center>
+        <iframe id="igraph" src="https://plot.ly/~gmon01/32" width="700" height="438" style="margin: 40px auto" seamless="seamless" scrolling="no"></iframe>
+        </center>
+        </div> -->
     </div>
 
   </div>
@@ -322,7 +275,7 @@
 <script>
 //switch between tabs
 
-    $('#myTab a[href="#Sensa"]').click(function (e) {
+    $('#myTab a[href="#Graph"]').click(function (e) {
       e.preventDefault()
       $(this).tab('show')
     });
@@ -401,43 +354,13 @@
 <script>
 //send sensa up to UI
 
-    var date = new Date();
-
-    function getTime() {
-
-      var hour = date.getHours();
-      hour = (hour < 10 ? "0" : "") + hour;
-
-      var min  = date.getMinutes();
-      min = (min < 10 ? "0" : "") + min;
-
-      var sec  = date.getSeconds();
-      sec = (sec < 10 ? "0" : "") + sec;
-
-      return hour + ":" + min + ":" + sec;
-    }
-
-
-    function getDate() {
-      var year = date.getFullYear();
-
-      var month = date.getMonth() + 1;
-      month = (month < 10 ? "0" : "") + month;
-
-      var day  = date.getDate();
-      day = (day < 10 ? "0" : "") + day;
-
-      return month + "-" + day + "-" + year;
-
-    }
-
     // var host = window.document.location.host.replace(/:.*/, '');
     //   console.log(host);
     // var socket = io.connect(host + ':8088');
 
-    // var socket = io.connect('http://192.168.1.225:8088');
-    var socket = io.connect('http://25.124.233.64:8088');
-
+    var socket = io.connect('http://192.168.1.225:8088'); //James' Router
+    //var socket = io.connect('http://25.124.233.64:8088'); //Hamachi
+    // var socket = io.connect('http://192.168.255.197:8088'); //Frank's Router
 
     socket.on('sensor_reading', function(data){
       console.log('sensor_reading:' + data);
@@ -487,7 +410,6 @@
             $("#slider-grow" ).slider( "value", 0 );
          }
          console.log(data.value);
-         socket.emit('command', {state: data.value , module:'growLight', value: $( "#slider-grow" ).slider( "value" )});
      });
 
   //Switches for lights
@@ -523,10 +445,7 @@
           // socket.emit('command', {state: data.value , module:'lights', relayID:'Mosfet3',  value: $( "#blue" ).slider( "value" ) });
       });
 
-      $('#GrowLight').on('switch-change', function (e, data) {
 
-          socket.emit('command', {state: data.value , module:'lights', relayID:'Mosfet4'});
-      });
   </script>
 
   <script>
@@ -539,11 +458,16 @@
       values: [0],
       slide: function( event, ui ) {
         $( "#amountGrow" ).val(ui.values[ 0 ] + "%");
+
+        var growVal = $( "#slider-grow" ).slider( "value" );
+        console.log('Grow Intensity:', growVal );
+        socket.emit('command', {state: true , module:'growLight', value: growVal});
       }
     });
     $( "#amountGrow" ).val( $( "#slider-grow" ).slider( "values", 0 ) + "%");
     $( "#slider-grow" ).slider( "value", 0 );
     $( "#slider-grow" ).slider("disable");
+
   });
   </script>
 
@@ -585,8 +509,8 @@
         change: refreshSwatch
       });
       $( "#red" ).slider( "value", 255 );
-      $( "#green" ).slider( "value", 200 );
-      $( "#blue" ).slider( "value", 150 );
+      $( "#green" ).slider( "value", 255 );
+      $( "#blue" ).slider( "value", 255 );
       $("#red").slider("disable");
       $("#green").slider("disable");
       $("#blue").slider("disable");
@@ -657,25 +581,6 @@
   </script>
 
   <script>
-  //Switches for Dose
-      // $('#InputPump').on('switch-change', function (e, data) {
-      //     socket.emit('command', {state: data.value , module:'toggleControl', relayID:'relay3'});
-      // });
-      //
-      // $('#OutputPump').on('switch-change', function (e, data) {
-      //     socket.emit('command', {state: data.value , module:'toggleControl', relayID:'relay2'});
-      // });
-      //
-      // $('#AirPump').on('switch-change', function (e, data) {
-      //     socket.emit('command', {state: data.value , module:'toggleControl', relayID:'relay4'});
-      // });
-  </script>
-
-
-
-
-
-  <script>
   //Modulation for Incubate slider
     $(function() {
     $( "#slider-incubate" ).slider({
@@ -699,9 +604,9 @@
     $(function() {
       $( "#slider-liquidRange" ).slider({
         range: true,
-        min: 60,
-        max: 87,
-        values: [ 72, 75 ],
+        min: 70,
+        max: 90,
+        values: [ 75, 85 ],
         slide: function( event, ui ) {
           $( "#amountLiquid" ).val( ui.values[ 0 ] + "ºF - " + ui.values[ 1 ] + "ºF" );
         }
@@ -731,11 +636,6 @@
     $( "#slider-airRange" ).slider("enable");
   });
   </script>
-
-
-
-
-
 
   <script>
   //       $('#arkSchedule').on('switch-change', function (e, data) {
@@ -819,55 +719,6 @@
    </script>
 
 
-
-
-
-  <script type="text/javascript">
-
-
-  //     function updateClock ( )
-  //     {
-  //       var currentTime = new Date ( );
-
-  //       var currentHours = currentTime.getHours ( );
-  //       var currentMinutes = currentTime.getMinutes ( );
-  //       var currentSeconds = currentTime.getSeconds ( );
-
-  //       // Pad the minutes and seconds with leading zeros, if required
-  //       currentMinutes = ( currentMinutes < 10 ? "0" : "" ) + currentMinutes;
-  //       currentSeconds = ( currentSeconds < 10 ? "0" : "" ) + currentSeconds;
-
-  //       // Choose either "AM" or "PM" as appropriate
-  //       var timeOfDay = ( currentHours < 12 ) ? "AM" : "PM";
-
-  //       // Convert the hours component to 12-hour format if needed
-  //       currentHours = ( currentHours > 12 ) ? currentHours - 12 : currentHours;
-
-  //       // Convert an hours component of "0" to "12"
-  //       currentHours = ( currentHours == 0 ) ? 12 : currentHours;
-
-  //       // Compose the string for display
-  //       var currentTimeString = currentHours + ":" + currentMinutes + ":" + currentSeconds + " " + timeOfDay;
-
-  //       // Update the time display
-  //       document.getElementById("clock").firstChild.nodeValue = currentTimeString;
-  //       // document.getElementById("date").firstChild.nodeValue = currentDateString;
-
-  //     }
-
-  //     function sensorNow ()
-  //     {
-  //       socket.emit('command', {data:'on', module:'allSensors'});
-
-  //     }
-
-  //
-
-
-
-
-  </script>
-
 <script>
 gAtEnd = true;
 gLength = 0;
@@ -947,6 +798,78 @@ function handleZoom(event) {
     else gAtEnd = false;
 }
 
+</script>
+
+<script type="text/javascript">
+
+
+//     function updateClock ( )
+//     {
+//       var currentTime = new Date ( );
+
+//       var currentHours = currentTime.getHours ( );
+//       var currentMinutes = currentTime.getMinutes ( );
+//       var currentSeconds = currentTime.getSeconds ( );
+
+//       // Pad the minutes and seconds with leading zeros, if required
+//       currentMinutes = ( currentMinutes < 10 ? "0" : "" ) + currentMinutes;
+//       currentSeconds = ( currentSeconds < 10 ? "0" : "" ) + currentSeconds;
+
+//       // Choose either "AM" or "PM" as appropriate
+//       var timeOfDay = ( currentHours < 12 ) ? "AM" : "PM";
+
+//       // Convert the hours component to 12-hour format if needed
+//       currentHours = ( currentHours > 12 ) ? currentHours - 12 : currentHours;
+
+//       // Convert an hours component of "0" to "12"
+//       currentHours = ( currentHours == 0 ) ? 12 : currentHours;
+
+//       // Compose the string for display
+//       var currentTimeString = currentHours + ":" + currentMinutes + ":" + currentSeconds + " " + timeOfDay;
+
+//       // Update the time display
+//       document.getElementById("clock").firstChild.nodeValue = currentTimeString;
+//       // document.getElementById("date").firstChild.nodeValue = currentDateString;
+
+//     }
+
+// var date = new Date();
+//
+// function getTime() {
+//
+//   var hour = date.getHours();
+//   hour = (hour < 10 ? "0" : "") + hour;
+//
+//   var min  = date.getMinutes();
+//   min = (min < 10 ? "0" : "") + min;
+//
+//   var sec  = date.getSeconds();
+//   sec = (sec < 10 ? "0" : "") + sec;
+//
+//   return hour + ":" + min + ":" + sec;
+// }
+//
+//
+// function getDate() {
+//   var year = date.getFullYear();
+//
+//   var month = date.getMonth() + 1;
+//   month = (month < 10 ? "0" : "") + month;
+//
+//   var day  = date.getDate();
+//   day = (day < 10 ? "0" : "") + day;
+//
+//   return month + "-" + day + "-" + year;
+//
+// }
+
+//     function sensorNow ()
+//     {
+//       socket.emit('command', {data:'on', module:'allSensors'});
+
+//     }
+
+//
 </script>
 
 </body>

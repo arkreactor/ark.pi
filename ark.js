@@ -249,19 +249,16 @@ sensa.on('command', function(data){
       // arduino.analogWrite(9, data.values.green);
       // arduino.analogWrite(11, data.values.blue);
     }
-    if (data.relayID === 'Mosfet1') serialPort.write("L"+data.values.red+" "+data.values.green+" "+data.values.blue+"\n");
-    if (data.relayID=== 'Mosfet2') serialPort.write("G"+data.value+"\r");
-    if (data.relayID === 'Mosfet3') serialPort.write("B"+data.value+"\r");
     saveAction(data);
 
   } else if ( data.module === "RecircPump" ) {
       if (data.state == true) {
-        arduino.digitalWrite(2, true);  //pump on
-        arduino.digitalWrite(4, false);
+        // arduino.digitalWrite(2, true);  //pump on
+        // arduino.digitalWrite(4, false);
       }
       else {
-        arduino.digitalWrite(2, false); //pump off
-        arduino.digitalWrite(4, false);
+        // arduino.digitalWrite(2, false); //pump off
+        // arduino.digitalWrite(4, false);
       }
 
     saveAction(data);
@@ -336,7 +333,7 @@ io.sockets.on('connection', function (socket) {
 
     } else if ( data.module === "LoadPump" ) {
         if (data.state == true) {
-          arduino.digitalWrite(22, true); // RelayHighV 1 for plugin pump - on
+          arduino.digitalWrite(22, true);  // RelayHighV 1 for plugin pump - on
         }
         else {
           arduino.digitalWrite(22, false); // RelayHighV 1 plugin pump - off
@@ -388,18 +385,20 @@ io.sockets.on('connection', function (socket) {
 
     } else if (data.module == "growLight") {
       if (data.state == true) {
-        // arduino.digitalWrite(4, false); //forward
+        arduino.digitalWrite(23, true); //RelayHighV 2 - on AC/DC converters
+        arduino.analogWrite(12, data.values.green);
+        arduino.analogWrite(13, data.values.red);
       }
       else {
-        // arduino.digitalWrite(4, true); //backward
+        arduino.digitalWrite(23, false); //RelayHighV 2 - off AC/DC converters
       }
 
     } else if (data.module == "DosePump") {
       if (data.state == true) {
-        // arduino.digitalWrite(5, false); //forward
+        arduino.digitalWrite(5, true); //Mosfet on
       }
       else {
-        // arduino.digitalWrite(5, true); //backward
+        arduino.digitalWrite(5, false); //Mosfet off
       }
 
     }else if ( data.module === "thermocycle-off" ) {

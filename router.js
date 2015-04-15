@@ -6,6 +6,9 @@ module.exports = function(app) {
    app.get('/graph', function(req,res){
         res.render('graph.html');
    });
+   app.get('/amchart', function(req,res){
+        res.render('amchart.html');
+   });
 
 
 };

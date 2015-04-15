@@ -27,11 +27,9 @@ stroke: #000;
 <script>
 var data;
 
-var host = window.document.location.host.replace(/:.*/, '');
-console.log(host);
-var ws = new WebSocket('ws://' + host + ':5005');
-//var socket = io.connect('http://192.168.255.100:8088');
-socket.on('sensor_reading', function(reading){
+//var host = window.document.location.host.replace(/:.*/, '');
+var ws = io.connect('http://25.124.244.64:8888');
+ws.on('sensor_reading', function(reading){
   console.log('Sensor Reading: ' + reading);
   data.shift();
   var datum = parseFloat(event.data);
