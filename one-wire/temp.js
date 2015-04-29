@@ -1,7 +1,9 @@
 var exec = require('child_process').exec;
 var util = require('../sensor_util');
 
-var tempId= '28-00000471fb7a';
+//var tempId = '28-00000471fb7a'; //Sensor went bad
+// var tempId = '28-0000045d5076'; //Soldered poorly
+var tempId = '28-000003e48dcc'; // LET'S TRY AGAIN
 
 exports = exports || {};    // hack to run standalone or as module
 exports.read = function (value_reporter) {
@@ -10,13 +12,12 @@ exports.read = function (value_reporter) {
 
     var tempC = parseFloat(stdout) / 1000;
     var tempF = ((1.8)*tempC + 32).toFixed(2);
-    
-    var msg = util.makeSensorMessage('Temperature', 'Celsius', tempC, 'C'); 
-        util.addSensorReading(msg, 'Fahrenheit', tempF, 'F');    
+
+    var msg = util.makeSensorMessage('Temperature', 'Celsius', tempC, 'C');
+        util.addSensorReading(msg, 'Fahrenheit', tempF, 'F');
     //console.log(msg);
     value_reporter(msg);
   });
 }
 
 exports.read(console.log);
-

@@ -296,6 +296,23 @@ sensa.on('command', function(data){
 //////////////////////////////////////////
 /*LOCAL SOCKET */
 
+var gPins = {
+  recirc: 38,
+  dispense: 40,
+  NOvalve: 42,
+  NCvalve: 44,
+  heater: 46,
+  air: 48,
+  growlight: 50,
+  growlux: 2,
+  RGB: 4,
+  dose: 7,
+  mixSpeed: 11,
+  mixDirection: 12
+}
+
+var RELAYON = false, RELAYOFF = true;
+
 io.sockets.on('connection', function (socket) {
   connections.push(socket);
 
@@ -314,116 +331,160 @@ io.sockets.on('connection', function (socket) {
   socket.on('command', function (data) {
   	console.log(data);
 
-    if ( data.module === "SensaOn" ) {
+    // if ( data.module === "SensaOn" ) {
+    //     if (data.state == true) {
+    //       serialPort.write('{setEntry:{index:0,msMeasurementPeriod:2000}}\n{setEntry:{index:4,msMeasurementPeriod:2000}}\n');
+    //     }
+    //     else {
+    //       serialPort.write('{setEntry:{index:0,msMeasurementPeriod:0}}\n{setEntry:{index:4,msMeasurementPeriod:0}}\n');
+    //     }
+    //
+    // }
+    if ( data.module === "sensaTemp" ) {
         if (data.state == true) {
-          serialPort.write('{setEntry:{index:0,msMeasurementPeriod:2000}}\n{setEntry:{index:1,msMeasurementPeriod:2000}}\n');
+          serialPort.write('{setEntry:{index:0,msMeasurementPeriod:2000}}\n');
         }
         else {
-          serialPort.write('{setEntry:{index:0,msMeasurementPeriod:0}}\n{setEntry:{index:1,msMeasurementPeriod:0}}\n');
+          serialPort.write('{setEntry:{index:0,msMeasurementPeriod:0}}\n');
         }
+
+    } else if ( data.module === "sensaPH" ) {
+          if (data.state == true) {
+            serialPort.write('{setEntry:{index:4,msMeasurementPeriod:2000}}\n');
+          }
+          else {
+            serialPort.write('{setEntry:{index:4,msMeasurementPeriod:0}}\n');
+          }
+
+    } else if ( data.module === "sensaRedox" ) {
+          if (data.state == true) {
+            serialPort.write('{setEntry:{index:2,msMeasurementPeriod:2000}}\n');
+          }
+          else {
+            serialPort.write('{setEntry:{index:2,msMeasurementPeriod:0}}\n');
+          }
+
+    } else if ( data.module === "sensaOptical" ) {
+          if (data.state == true) {
+            serialPort.write('{setEntry:{index:5,msMeasurementPeriod:2000}}\n');
+          }
+          else {
+            serialPort.write('{setEntry:{index:5,msMeasurementPeriod:0}}\n');
+          }
+
+    } else if ( data.module === "sensaFlow" ) {
+          if (data.state == true) {
+            serialPort.write('{setEntry:{index:6,msMeasurementPeriod:2000}}\n');
+          }
+          else {
+            serialPort.write('{setEntry:{index:6,msMeasurementPeriod:0}}\n');
+          }
 
     } else if (data.module === "lights" && data.values) {
-      if (data.relayID === 'Indicators') {
-        console.log("light command receive: "+data.values.red+" "+data.values.green+" "+data.values.blue+"\n");
-        arduino.analogWrite(9, data.values.green);
-      	arduino.analogWrite(10, data.values.red);
-		    arduino.analogWrite(11, data.values.blue);
-	     }
-
+          if (data.relayID === 'Indicators') {
+            console.log("light command receive: "+data.values.red+" "+data.values.green+" "+data.values.blue+"\n");
+          	arduino.analogWrite(gPins.RGB, data.values.red);
+            arduino.analogWrite((gPins.RGB+1), data.values.green);
+    		    arduino.analogWrite((gPins.RGB+2), data.values.blue);
+    	    }
 
     } else if ( data.module === "LoadPump" ) {
-        if (data.state == true) {
-          arduino.digitalWrite(22, true);  // RelayHighV 1 for plugin pump - on
-        }
-        else {
-          arduino.digitalWrite(22, false); // RelayHighV 1 plugin pump - off
-        }
+          if (data.state == true) {
+            arduino.digitalWrite(22, true);  // RelayHighV 1 for plugin pump - on
+          }
+          else {
+            arduino.digitalWrite(22, false); // RelayHighV 1 plugin pump - off
+          }
 
     } else if ( data.module === "RecircValve" ) {
-        if (data.state == true) {
-          arduino.digitalWrite(26, false); // RelayLowV 1 NO valve - open
-        }
-        else {
-          arduino.digitalWrite(26, true); // RelayLowV 1 NO valve - closed
-        }
+          if (data.state == true) {
+            arduino.digitalWrite(gPins.NOvalve, RELAYON); // RelayLowV 1 NO valve - open
+          }
+          else {
+            arduino.digitalWrite(gPins.NOvalve, RELAYOFF); // RelayLowV 1 NO valve - closed
+          }
 
     } else if ( data.module === "DrainValve" ) {
-        if (data.state == true) {
-          arduino.digitalWrite(27, true); // RelayLowV 2 NC valve - open
-        }
-        else {
-          arduino.digitalWrite(27, false); // RelayLowV 2 NO valve - closed
-        }
+          if (data.state == true) {
+            arduino.digitalWrite(gPins.NCvalve, RELAYON); // RelayLowV 2 NC valve - open
+          }
+          else {
+            arduino.digitalWrite(gPins.NCvalve, RELAYOFF); // RelayLowV 2 NO valve - closed
+          }
 
     } else if ( data.module === "DispenseValve" ) {
-        if (data.state == true) {
-          arduino.digitalWrite(28, true);  //RelayLowV 3 Dispense Valve - open
-
-        }
-        else {
-          arduino.digitalWrite(28, false);  //RelayLowV 3 Dispense Valve - closed
-        }
+          if (data.state == true) {
+            arduino.digitalWrite(gPins.dispense, RELAYON);  //RelayLowV 3 Dispense Valve - open
+          }
+          else {
+            arduino.digitalWrite(gPins.dispense, RELAYOFF);  //RelayLowV 3 Dispense Valve - closed
+          }
 
     }else if ( data.module === "RecircPump" ) {
-        if (data.state == true) {
-          arduino.digitalWrite(29, true);  // Recirc pump on
-          arduino.digitalWrite(27, false); //RelayLowV NO valve - open
-          arduino.digitalWrite(26, false); //RelayLowV NC valve - closed
-        }
-        else {
-          // arduino.digitalWrite(2, true); // pump off
-          arduino.digitalWrite(29, false); // Recirc pump off
-        }
+          if (data.state == true) {
+            arduino.digitalWrite(gPins.recirc, RELAYON);  // Recirc pump on
+            // arduino.digitalWrite(27, false); //RelayLowV NO valve - open
+            // arduino.digitalWrite(26, false); //RelayLowV NC valve - closed
+          }
+          else {
+            // arduino.digitalWrite(2, true); // pump off
+            arduino.digitalWrite(gPins.recirc, RELAYOFF); // Recirc pump off
+          }
 
     } else if (data.module == "AirPump") {
-      if (data.state == true) {
-        // arduino.digitalWrite(3, false); //forward
-      }
-      else {
-        // arduino.digitalWrite(3, true); //backward
-      }
+          if (data.state == true) {
+            // arduino.digitalWrite(3, false); //forward
+          }
+          else {
+            // arduino.digitalWrite(3, true); //backward
+          }
 
     } else if (data.module == "growLight") {
-      if (data.state == true) {
-        arduino.digitalWrite(23, true); //RelayHighV 2 - on AC/DC converters
-        arduino.analogWrite(12, data.values.green);
-        arduino.analogWrite(13, data.values.red);
-      }
-      else {
-        arduino.digitalWrite(23, false); //RelayHighV 2 - off AC/DC converters
-      }
+          if (data.state == true) {
+            arduino.digitalWrite(gPins.growlight, RELAYON); //RelayHighV 2 - on AC/DC converters
+            // arduino.digitalWrite(gPins.growlux, true);
+            // arduino.digitalWrite(gPins.growlux+1, true);
+            arduino.analogWrite(gPins.growlux, data.value);
+            arduino.analogWrite(gPins.growlux+1, data.value);
+            console.log(data.value);
+          }
+          else {
+            arduino.digitalWrite(gPins.growlight, RELAYOFF); //RelayHighV 2 - off AC/DC converters
+            // arduino.digitalWrite(gPins.growlux, false);
+            // arduino.digitalWrite(gPins.growlux+1, false)
+          }
 
     } else if (data.module == "DosePump") {
-      if (data.state == true) {
-        arduino.digitalWrite(5, true); //Mosfet on
-      }
-      else {
-        arduino.digitalWrite(5, false); //Mosfet off
-      }
+          if (data.state == true) {
+            arduino.digitalWrite(5, true); //Mosfet on
+          }
+          else {
+            arduino.digitalWrite(5, false); //Mosfet off
+          }
 
     }else if ( data.module === "thermocycle-off" ) {
-        //serialPort.write("t\n");
-        thermocycleState = false;
-        //resetThermocycle();
+          //serialPort.write("t\n");
+          thermocycleState = false;
+          //resetThermocycle();
 
     } else if ( data.module === "thermocycle" ) {
-        //serialPort.write("T"+data.values.lower_bound_temp+" "+data.values.upper_bound_temp+"\n");
-        thermocycleState = true;
-        gTemp.min = data.values.lower_bound_temp;
-        gTemp.max = data.values.upper_bound_temp;
-        //resetThermocycle();
+          //serialPort.write("T"+data.values.lower_bound_temp+" "+data.values.upper_bound_temp+"\n");
+          // thermocycleState = true;
+          // gTemp.min = data.values.lower_bound_temp;
+          // gTemp.max = data.values.upper_bound_temp;
+          //resetThermocycle();
 
     } else if ( data.module === "readStateControl" ) {
 
-      var currentStateStr = fs.readFileSync("./controllerState.txt");
-      controllerStateObject = JSON.parse(currentStateStr);
+          var currentStateStr = fs.readFileSync("./controllerState.txt");
+          controllerStateObject = JSON.parse(currentStateStr);
 
 
     } else if ( data.module === "toggleControl" ) {
-      var relayID = data.relayID;
+          var relayID = data.relayID;
 
-      controllerStateObject[relayID] = data.state;
-      //relays.write_value(relayID,data.state);
+          controllerStateObject[relayID] = data.state;
+          //relays.write_value(relayID,data.state);
 
 
     } else if ( data.module === "arkSchedule" ) {

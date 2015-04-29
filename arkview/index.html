@@ -20,110 +20,47 @@
 <!--<body onload="sensorNow(); updateClock(); setInterval('updateClock()', 1000 );">  -->
 <body class="ui-widget-content" style="border:0;">
 
-  <div class="navbar navbar-fixed-top">
+  <div class="navbar navbar-inverse navbar-fixed-top">
     <div class="navbar-inner center">
-      <div id="arkNav">
+      <!-- <div id="arkNav"> -->
 
-        <img src="/img/ark-reactor.png" style="height: 25px; width: auto; float: left; padding: 12px">
+        <!-- <img src="/img/sensa.io.png" style="height: 40px; width: auto; float: left; padding: 12px"> -->
+        <img src="/img/sensa_circuit.png" style="height:50px; float: left; padding: 5px 0">
+        <img src="/img/sensa_word.png" style="height:50px; float: left; padding: 5px 20px 0 0">
+        <ul class="nav nav-pills" style="margin: 10px 10px 0 0">
+          <li style="padding: 5px" class="active"><a href="#Recipe" data-toggle="pill">Experiment</a></li>
+          <li style="padding: 5px"><a href="#Sensa" data-toggle="pill">Sensa</a></li>
+          <li style="padding: 5px"><a href="#Liquid" data-toggle="pill">Liquid</a></li>
+          <li style="padding: 5px"><a href="#Light" data-toggle="pill">Light</a></li>
+          <!-- <img src="/img/zephyr_logo.png" style="height: 40px; width: auto; float: left; padding: 12px"> -->
 
-        <ul class="nav nav-pills">
-          <li style="padding: 5px" class="active"><a href="#Alive" data-toggle="pill">Control</a></li>
-          <li style="padding: 5px"><a href="#Load" data-toggle="pill">Load</a></li>
-          <!-- <li style="padding: 5px"><a href="#Graph" data-toggle="pill">Sense</a></li> -->
-          <!--<li><button type="button" id="sensorNow" class="btn btn-primary">Ark</button></li>-->
        </ul>
-     </div>
+     <!-- </div> -->
     </div>
   </div>
 
 
   <div class="tab-content">
 
-    <div class="tab-pane active" id="Alive">
+    <div class="tab-pane" id="Liquid">
 
       <table>
         <tr>
-          <td>
-            <div class="well Incubate center">
-                <table><tbody>
-                  <tr>
-                    <td>
-                      <h4>Temperature</h4>
-                    </td>
-                    <td>
-                        <h4 id ="liquidTemp" class="sensa">&nbsp;</h4>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <h4>pH</h4>
-                    </td>
-                    <td>
-                      <h4 id ="pH" class="sensa">&nbsp;</h4>
-                    </td>
-                  </tr></tbody></table>
-                <div id="SensaOn" class="switch switch-large" data-on="success" data-off="">
-                      <input type="checkbox"/>
-                </div>
-            </div>
-            <div class="well Incubate center">
-            <h4>Incubate</h4>
-              <div class="fieldSize">
-                 <p>
-                 <input type="text" id="amountLiquid" style="border:0; color:#00CCFF; font-weight:bold; width=100px">
-                 </p>
-
-                 <div id="slider-liquidRange"></div>
-              </div>
-              <div id="Thermocycle" class="switch switch-large" data-on="success" data-off="">
-                    <input type="checkbox"/>
-              </div>
-            </div>
-            <!-- <div class="well Incubate center">
-                <h3>Incubation Temp</h3>
-                <input type="text" id="amount" style="border:0; color:#00CCFF; font-weight:bold; width: 66px; margin-bottom: 0px">
-                <div id="slider-incubate"></div>
-                <div id="Incubate" class="switch" data-on="success" data-off="">
-                      <input type="checkbox"/>
-                </div>
-            </div> -->
-            <!--    <div class="fieldSize">
-                  <div>
-                    <select id="thermocycle-schedule">
-                              <option value="5" >5 seconds</option>
-                              <option value="30" >30 seconds</option>
-                              <option value="60" >60 seconds</option>
-                              <option value="300" >5 minutes</option>
-                              <option value="600" >10 minutes</option>
-                    </select>
-                  </div>
-               </div> -->
-          </td>
-
           <td>
             <div class="well Activate center">
               <h4>Recirc</h4>
                   <div id="Recirc" class="switch switch-large" data-on="success" data-off="">
                       <input type="checkbox"/>
                   </div>
-            </div>
-
-            <div class="well Activate center">
               <h4>Dose</h4>
                   <div id="Dose" class="switch switch-large" data-on="success" data-off="">
                     <input type="checkbox"/>
                   </div>
-            </div>
-
-
-            <div class="well Activate center">
               <h4>Dispense</h4>
-                    <div id="DispenseValve" class="switch switch-large" data-on-label="Open" data-off-label="Closed" data-on="success" data-off="danger">
+                  <div id="DispenseValve" class="switch switch-large" data-on="success" data-off="">
                     <input type="checkbox"/>
-                   </div>
+                    </div>
             </div>
-
-
             <!-- <div class="well DoseLiquid center">
                 <h3> Feeder 1 </h3>
                 <div class="fieldSize">
@@ -165,92 +102,244 @@
             </div> -->
           </td>
           <td>
-            <div class="center">
-                <table><tbody>
-                    <tr>
-                      <td>
-                      <h4>Grow</h4>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div id="growLight" class="switch switch-small" data-on="default" data-off="">
-                          <input type="checkbox"/>
-                        </div>
-                      </td>
-                      <td>
-                        <!-- <input type="text" id="amountGrow" style="border:0; color:#993399; font-weight:bold; width: 220px; margin-bottom: 0px"> -->
-                        <div id="slider-grow"></div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                      <h4>Indicate</h4>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <!-- <h4>R</h4> -->
-                        <div id="RedLight" class="switch switch-small" data-on="danger" data-off="">
-                         <input type="checkbox"/>
-                        </div>
-                      </td>
-                      <td>
-                        <div id="red"></div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <!-- <h4>G</h4> -->
-                         <div id="GreenLight" class="switch switch-small" data-on="success" data-off="">
-                         <input type="checkbox"/>
-                        </div>
-                      </td>
-                      <td>
-                          <div id="green"></div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <!-- <h4>B</h4> -->
-                        <div id="BlueLight" class="switch switch-small" data-on="primary" data-off="">
-                         <input type="checkbox"/>
-                        </div>
-                      </td>
-                      <td>
-                        <div id="blue"></div>
-                      </td>
-                      <!-- <div id="swatch" class="ui-widget-content ui-corner-all"></div> -->
+            <div class ="well Activate center">
+                  <h4>Load</h4>
+                  <div id="LoadPump" class="switch switch-large" data-on="success" data-off="">
+                    <input type="checkbox"/>
+                  </div>
+                  <h4>Recirc Valve</h4>
+                  <div id="RecircValve" class="switch switch-large" data-on-label="Closed" data-off-label="Open" data-on="danger" data-off="success">
+                        <input type="checkbox"/>
+                  </div>
+                  <h4>Drain Valve</h4>
+                  <div id="DrainValve" class="switch switch-large" data-on-label="Open" data-off-label="Closed" data-on="success" data-off="danger">
+                        <input type="checkbox"/>
+                  </div>
 
-                    </tr>
-                 </tbody>
-                </table>
             </div>
           </td>
+          <td>
+            <!-- <div class="well Incubate center">
+            <h4>Thermocyle</h4>
+              <div class="fieldSize">
+                 <p>
+                 <input type="text" id="amountThermocycle" style="border:0; color:#00CCFF; font-weight:bold; width=100px">
+                 </p>
+
+                 <div id="slider-thermocycle"></div>
+              </div>
+              <div id="Thermocycle" class="switch switch-small" data-on="success" data-off="">
+                    <input type="checkbox"/>
+              </div>
+            </div> -->
+            <div class="well Incubate center">
+                <h4>Incubate</h4>
+                <input type="text" id="amountIncubate" style="border:0; color:#00CCFF; font-weight:bold; width: 66px; margin-bottom: 0px">
+                <div id="slider-incubate"></div>
+                <div id="Incubate" class="switch" data-on="success" data-off="">
+                      <input type="checkbox"/>
+                </div>
+            </div>
+            <!--    <div class="fieldSize">
+                  <div>
+                    <select id="thermocycle-schedule">
+                              <option value="5" >5 seconds</option>
+                              <option value="30" >30 seconds</option>
+                              <option value="60" >60 seconds</option>
+                              <option value="300" >5 minutes</option>
+                              <option value="600" >10 minutes</option>
+                    </select>
+                  </div>
+               </div> -->
+          </td>
         </tr>
+      </tbody>
       </table>
 
     </div>
 
-    <div class="tab-pane" id="Load">
+    <div class="tab-pane" id="Light">
+      <div class="center" style="margin-top: 20px">
+          <table><tbody>
+              <tr>
+                <td>
+                <h4>Grow</h4>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div id="growLight" class="switch switch-small" data-on="default" data-off="">
+                    <input type="checkbox"/>
+                  </div>
+                </td>
+                <td>
+                  <!-- <input type="text" id="amountGrow" style="border:0; color:#993399; font-weight:bold; width: 220px; margin-bottom: 0px"> -->
+                  <div id="slider-grow"></div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                <h4>Indicate</h4>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <!-- <h4>R</h4> -->
+                  <div id="RedLight" class="switch switch-small" data-on="danger" data-off="">
+                   <input type="checkbox"/>
+                  </div>
+                </td>
+                <td>
+                  <div id="red"></div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <!-- <h4>G</h4> -->
+                   <div id="GreenLight" class="switch switch-small" data-on="success" data-off="">
+                   <input type="checkbox"/>
+                  </div>
+                </td>
+                <td>
+                    <div id="green"></div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <!-- <h4>B</h4> -->
+                  <div id="BlueLight" class="switch switch-small" data-on="primary" data-off="">
+                   <input type="checkbox"/>
+                  </div>
+                </td>
+                <td>
+                  <div id="blue"></div>
+                </td>
+                <!-- <div id="swatch" class="ui-widget-content ui-corner-all"></div> -->
+
+              </tr>
+           </tbody>
+          </table>
+      </div>
+
+    </div>
+
+    <div class="tab-pane" id="Sensa">
+      <div class="center" style="margin-top: 20px">
+          <table><tbody>
+            <tr>
+              <td>
+                <div id="sensaTemp" class="switch switch-small" data-on="success" data-off="">
+                      <input type="checkbox"/>
+                </div>
+              </td>
+              <td>
+                <h4>Temperature</h4>
+              </td>
+              <td>
+                  <h4 id ="liquidTemp" class="sensa">&nbsp;</h4>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div id="sensaPH" class="switch switch-small" data-on="success" data-off="">
+                      <input type="checkbox"/>
+                </div>
+              </td>
+              <td>
+                <h4>pH</h4>
+              </td>
+              <td>
+                <h4 id ="pH" class="sensa">&nbsp;</h4>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div id="sensaRedox" class="switch switch-small" data-on="success" data-off="">
+                      <input type="checkbox"/>
+                </div>
+              </td>
+              <td>
+                <h4>Redox</h4>
+              </td>
+              <td>
+                <h4 id ="Redox" class="sensa">&nbsp;</h4>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div id="sensaOptical" class="switch switch-small" data-on="success" data-off="">
+                      <input type="checkbox"/>
+                </div>
+              </td>
+              <td>
+                <h4>Optical</h4>
+              </td>
+              <td>
+                <h4 id ="Optical" class="sensa">&nbsp;</h4>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div id="sensaFlow" class="switch switch-small" data-on="success" data-off="">
+                      <input type="checkbox"/>
+                </div>
+              </td>
+              <td>
+                <h4>Flow</h4>
+              </td>
+              <td>
+                <h4 id ="Flow" class="sensa">&nbsp;</h4>
+              </td>
+            </tr>
+          </tbody></table>
+      </div>
+    </div>
+
+    <div class="tab-pane active" id="Recipe">
 
       <div class ="well Activate center">
-            <h4>Load Pump</h4>
-            <div id="LoadPump" class="switch switch-large" data-on="success" data-off="">
-              <input type="checkbox"/>
-            </div>
-            <h4>Recirc Valve</h4>
-            <div id="RecircValve" class="switch switch-large" data-on-label="Closed" data-off-label="Open" data-on="danger" data-off="success">
-                  <input type="checkbox"/>
-            </div>
-            <h4>Drain Valve</h4>
-            <div id="DrainValve" class="switch switch-large" data-on-label="Open" data-off-label="Closed" data-on="success" data-off="danger">
-                  <input type="checkbox"/>
-            </div>
-            <h4>Recirc Pump</h4>
-            <div id="Recirc" class="switch switch-large" data-on="success" data-off="">
-                <input type="checkbox"/>
-            </div>
+        <div class="dropdown" style="margin: 10px 0">
+            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+              Choose Experiment
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+              <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Sensa</a></li>
+              <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Octopus</a></li>
+              <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Hypha</a></li>
+              <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Zome</a></li>
+            </ul>
+        </div>
+
+        <div class="input-group">
+          <!-- <span class="input-group-addon" id="basic-addon1">@</span> -->
+          <input type="text" class="form-control" placeholder="Recipe Name" aria-describedby="basic-addon1">
+        </div>
+        <div class="input-group">
+          <!-- <span class="input-group-addon" id="basic-addon1">@</span> -->
+          <input type="text" class="form-control" placeholder="Ingredients" aria-describedby="basic-addon1">
+        </div>
+        <div class="input-group">
+          <!-- <span class="input-group-addon" id="basic-addon1">@</span> -->
+          <input type="text" class="form-control" placeholder="Time" aria-describedby="basic-addon1">
+        </div>
+        <div class="input-group">
+          <!-- <span class="input-group-addon" id="basic-addon1">@</span> -->
+          <input type="text" class="form-control" placeholder="Light" aria-describedby="basic-addon1">
+        </div>
+        <div class="input-group">
+          <!-- <span class="input-group-addon" id="basic-addon1">@</span> -->
+          <input type="text" class="form-control" placeholder="Heat" aria-describedby="basic-addon1">
+        </div>
+        <div class="input-group">
+          <!-- <span class="input-group-addon" id="basic-addon1">@</span> -->
+          <input type="text" class="form-control" placeholder="Feed" aria-describedby="basic-addon1">
+        </div>
+        <div class="input-group">
+          <!-- <span class="input-group-addon" id="basic-addon1">@</span> -->
+          <input type="text" class="form-control" placeholder="Air" aria-describedby="basic-addon1">
+        </div>
+        <button type="button" id="sensorNow" class="btn btn-primary">Ark</button>
 
       </div>
     </div>
@@ -275,29 +364,29 @@
 <script>
 //switch between tabs
 
+    $('#myTab a[href="#Liquid"]').click(function (e) {
+      e.preventDefault()
+      $(this).tab('show')
+    });
+
+    $('#myTab a[href="#Light"]').click(function (e) {
+      e.preventDefault()
+      $(this).tab('show')
+    });
+
+    $('#myTab a[href="#Recipe"]').click(function (e) {
+      e.preventDefault()
+      $(this).tab('show')
+    });
+
+    $('#myTab a[href="#Sensa"]').click(function (e) {
+      e.preventDefault()
+      $(this).tab('show')
+    });
+
     $('#myTab a[href="#Graph"]').click(function (e) {
       e.preventDefault()
       $(this).tab('show')
-    });
-
-    $('#myTab a[href="#Alive"]').click(function (e) {
-      e.preventDefault()
-      $(this).tab('show')
-    });
-
-    $('#myTab a[href="#Load"]').click(function (e) {
-      e.preventDefault()
-      $(this).tab('show')
-    });
-
-    $('#myTab a[href="#Temp"]').click(function (e) {
-      e.preventDefault()
-      $(this).tab('show')
-    });
-
-    $('#myTab a[href="#Dose"]').click(function (e) {
-     e.preventDefault()
-     $(this).tab('show')
     });
 
 
@@ -305,15 +394,37 @@
 
 
 <script>
-//activate pump dosing
+// On/Off sensa switches
 
-      $('#Recirc').on('switch-change', function (e, data) {
-          socket.emit('command', {state: data.value , module:'RecircPump'});
+      $('#sensaTemp').on('switch-change', function (e, data) {
+          socket.emit('command', {state: data.value , module:'sensaTemp'});
           console.log(data);
       });
 
-      $('#Air').on('switch-change', function (e, data) {
-          socket.emit('command', {state: data.value , module:'AirPump'});
+      $('#sensaPH').on('switch-change', function (e, data) {
+          socket.emit('command', {state: data.value , module:'sensaPH'});
+          console.log(data);
+      });
+
+      $('#sensaRedox').on('switch-change', function (e, data) {
+          socket.emit('command', {state: data.value , module:'sensaRedox'});
+          console.log(data);
+      });
+
+      $('#sensaOptical').on('switch-change', function (e, data) {
+          socket.emit('command', {state: data.value , module:'sensaOptical'});
+          console.log(data);
+      });
+
+      $('#sensaFlow').on('switch-change', function (e, data) {
+          socket.emit('command', {state: data.value , module:'sensaFlow'});
+          console.log(data);
+      });
+
+// On/Off Actuation switches
+
+      $('#Recirc').on('switch-change', function (e, data) {
+          socket.emit('command', {state: data.value , module:'RecircPump'});
           console.log(data);
       });
 
@@ -321,12 +432,6 @@
           socket.emit('command', {state: data.value , module:'DosePump'});
           console.log(data);
       });
-
-      $('#SensaOn').on('switch-change', function (e, data) {
-          socket.emit('command', {state: data.value , module:'SensaOn'});
-          console.log(data);
-      });
-
 
       $('#LoadPump').on('switch-change', function (e, data) {
           socket.emit('command', {state: data.value , module:'LoadPump'});
@@ -348,6 +453,16 @@
           console.log(data);
       });
 
+      $('#growLight').on('switch-change', function (e, data) {
+          socket.emit('command', {state: data.value , module:'growLight'});
+          console.log(data);
+      });
+
+      $('#Air').on('switch-change', function (e, data) {
+          socket.emit('command', {state: data.value , module:'AirPump'});
+          console.log(data);
+      });
+
 </script>
 
 
@@ -358,9 +473,9 @@
     //   console.log(host);
     // var socket = io.connect(host + ':8088');
 
-    var socket = io.connect('http://192.168.1.225:8088'); //James' Router
-    //var socket = io.connect('http://25.124.233.64:8088'); //Hamachi
-    // var socket = io.connect('http://192.168.255.197:8088'); //Frank's Router
+    // var socket = io.connect('http://192.168.1.225:8088'); //James' Router
+    var socket = io.connect('http://25.124.233.64:8088'); //Hamachi
+    // var socket = io.connect('http://192.168.255.100:8088'); //Frank's Router
 
     socket.on('sensor_reading', function(data){
       console.log('sensor_reading:' + data);
@@ -387,20 +502,22 @@
       if ( data.measurement.label == "pH" ) {
         $('#pH').text(data.measurement.datum);
       }
-      // if ( data.humidityi2 != "none" ) {
-      //   $('#humidityi2c').text(data.humidityi2c.Humidity + '%');
-      //   $('#tempi2c').text(data.humidityi2c.Fahrenheit + ' ˚F');
-      // }
-
-      // if ( data.humidityIn != "none" ) {
-      //   $('#humidityIn').text(data.humidityIn.Humidity + '%');
-      //   $('#tempIn').text(data.humidityIn.Fahrenheit + ' ˚F');
-      // }
+      if ( data.measurement.label == "redox" ) {
+        $('#Redox').text(data.measurement.datum);
+      }
+      if ( data.measurement.label == "optical" ) {
+        $('#Optical').text(data.measurment.datum);
+      }
+      if ( data.measurement.label == "flow" ) {
+        $('#Flow').text(data.measurment.datum);
+      }
     });
 
   </script>
 
   <script>
+  //Switches for lights
+  //When On, enable slider; when Off, disable slider and set back to 0
 
      $('#growLight').on('switch-change', function (e, data) {
          if ( data.value ) {
@@ -412,7 +529,6 @@
          console.log(data.value);
      });
 
-  //Switches for lights
       $('#RedLight').on('switch-change', function (e, data) {
           if ( data.value ) {
              $( "#red" ).slider("enable");
@@ -424,7 +540,6 @@
           // socket.emit('command', {state: data.value , module:'lights', relayID:'Mosfet1', value: $( "#red" ).slider( "value" ) });
       });
 
-
       $('#GreenLight').on('switch-change', function (e, data) {
           if ( data.value ) {
              $( "#green" ).slider("enable");
@@ -432,7 +547,6 @@
              $( "#green" ).slider("disable");
              $( "#green" ).slider( "value", 0 );
           }
-          // socket.emit('command', {state: data.value , module:'lights', relayID:'Mosfet2', value: $( "#green" ).slider( "value" )});
       });
 
       $('#BlueLight').on('switch-change', function (e, data) {
@@ -442,9 +556,7 @@
              $( "#blue" ).slider("disable");
              $( "#blue" ).slider( "value", 0 );
           }
-          // socket.emit('command', {state: data.value , module:'lights', relayID:'Mosfet3',  value: $( "#blue" ).slider( "value" ) });
       });
-
 
   </script>
 
@@ -459,12 +571,12 @@
       slide: function( event, ui ) {
         $( "#amountGrow" ).val(ui.values[ 0 ] + "%");
 
-        var growVal = $( "#slider-grow" ).slider( "value" );
+        var growVal = $( "#slider-grow" ).slider( "values", 0 );
         console.log('Grow Intensity:', growVal );
         socket.emit('command', {state: true , module:'growLight', value: growVal});
       }
     });
-    $( "#amountGrow" ).val( $( "#slider-grow" ).slider( "values", 0 ) + "%");
+    // $( "#amountGrow" ).val( $( "#slider-grow" ).slider( "values", 0 ) + "%");
     $( "#slider-grow" ).slider( "value", 0 );
     $( "#slider-grow" ).slider("disable");
 
@@ -494,11 +606,8 @@
         hex = hexFromRGB( red, green, blue );
       $( "#swatch" ).css( "background-color", "#" + hex );
       output_values("RGB", [ $('#RedLight'), $('#GreenLight'), $('#BlueLight') ], [red,green,blue]);
-      //console.log(data.value);
-      //socket.emit('command', {state: data.value , module:'lights', relayID:'Mosfet1', value: red});
-      //socket.emit('command', {state: data.value , module:'lights', relayID:'Mosfet1', value: green});
-      //socket.emit('command', {state: data.value , module:'lights', relayID:'Mosfet1', value: red});
     }
+
     $(function() {
       $( "#red, #green, #blue" ).slider({
         orientation: "horizontal",
@@ -527,32 +636,28 @@
   </script>
 
   <script>
-  //Switches for temp
+  //Switches for Temperature
       $('#Incubate').on('switch-change', function (e, data) {
           if ( !data.value ) {
              $("#slider-incubate").slider("enable");
           } else {
              $("#slider-incubate").slider("disable");
           }
-          socket.emit('command', {state: data.value , module:'toggleControl', relayID:'relay1' });
           if ( data.value ) {
-             socket.emit('command', { module: 'incubate', value: $( "#slider-incubate" ).slider( "value" ) } );
+             socket.emit('command', { module: 'incubate', value: $( "#slider-incubate" ).slider( "values", 0 ) } );
+          } else {
+            socket.emit('command', { module:'incubate-off'});
           }
+
       });
 
       $('#Thermocycle').on('switch-change', function (e, data) {
           if ( !data.value ) {
-             $("#slider-airRange").slider("enable");
+             $("#slider-thermocycle").slider("enable");
           } else {
-             $("#slider-airRange").slider("disable");
-          }
-          if ( !data.value ) {
-             $("#slider-liquidRange").slider("enable");
-          } else {
-             $("#slider-liquidRange").slider("disable");
+             $("#slider-thermocycle").slider("disable");
           }
 
-          // socket.emit('command', {state: data.value , module:'toggleControl', relayID:'relay1' });
           if ( data.value ) {
             console.log('thermocycle');
 
@@ -562,18 +667,11 @@
             // var timerValue = y[x].value;
 
 
-            var lbT = $( "#slider-liquidRange" ).slider( "values", 0 );
-            var ubT = $( "#slider-liquidRange" ).slider( "values", 1 );
+            var lbT = $( "#slider-thermocycle" ).slider( "values", 0 );
+            var ubT = $( "#slider-thermocycle" ).slider( "values", 1 );
 
             socket.emit('command', { module:'thermocycle', values: {lower_bound_temp:lbT, upper_bound_temp:ubT } });
 
-
-/*
-            socket.emit('command', { module:'thermocycle',
-                                                    value: { "AIR" : [ $( "#slider-airRange" ).slider( "value", 0 ), $( "#slider-airRange" ).slider( "value", 1 ) ],
-                                                             "LIQUID" : [ $( "#slider-liquidRange" ).slider( "value", 0 ), $( "#slider-liquidRange" ).slider( "value", 1 ) ],
-                                                             "TIMER" : timerValue  } });
-*/
           } else {
             socket.emit('command', { module:'thermocycle-off'});
           }
@@ -589,52 +687,30 @@
       max: 100,
       values: [70],
       slide: function( event, ui ) {
-        $( "#amount" ).val(ui.values[ 0 ] + "ºF");
+        $( "#amountIncubate" ).val(ui.values[ 0 ] + "ºF");
       }
     });
-    $( "#amount" ).val( $( "#slider-incubate" ).slider( "values", 0 ) + "ºF");
+    $( "#amountIncubate" ).val( $( "#slider-incubate" ).slider( "values", 0 ) + "ºF");
     $( "#slider-incubate" ).slider("enable");
   });
   </script>
 
-
-
   <script>
   //Modulation for Thermocycle Liquid slider
     $(function() {
-      $( "#slider-liquidRange" ).slider({
+      $( "#slider-thermocycle" ).slider({
         range: true,
         min: 70,
         max: 90,
         values: [ 75, 85 ],
         slide: function( event, ui ) {
-          $( "#amountLiquid" ).val( ui.values[ 0 ] + "ºF - " + ui.values[ 1 ] + "ºF" );
+          $( "#amountThermocycle" ).val( ui.values[ 0 ] + "ºF - " + ui.values[ 1 ] + "ºF" );
         }
       });
-      $( "#amountLiquid" ).val($( "#slider-liquidRange" ).slider( "values", 0 ) +
-        "ºF - " + $( "#slider-liquidRange" ).slider( "values", 1 ) +"ºF" );
-      $( "#slider-liquidRange" ).slider("enable");
+      $( "#amountThermocycle" ).val($( "#slider-thermocycle" ).slider( "values", 0 ) +
+        "ºF - " + $( "#slider-thermocycle" ).slider( "values", 1 ) +"ºF" );
+      $( "#slider-thermocycle" ).slider("enable");
     });
-  </script>
-
-
-
-  <script>
-  //Modulation for Thermocycle Air slider
-  $(function() {
-    $( "#slider-airRange" ).slider({
-      range: true,
-      min: 60,
-      max: 87,
-      values: [ 72, 75 ],
-      slide: function( event, ui ) {
-        $( "#amountAir" ).val( ui.values[ 0 ] + "ºF - " + ui.values[ 1 ] + "ºF" ) ;
-      }
-    });
-    $( "#amountAir" ).val($( "#slider-airRange" ).slider( "values", 0 ) +
-      "ºF - " + $( "#slider-airRange" ).slider( "values", 1 ) + "ºF" );
-    $( "#slider-airRange" ).slider("enable");
-  });
   </script>
 
   <script>

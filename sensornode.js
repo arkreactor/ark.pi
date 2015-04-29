@@ -6,8 +6,9 @@ var readPeriod = 5000;
 // sensor modules
 
 var sensors = [
-  require('./color/colorimeter'),
-  require('./one-wire/temp')
+  // require('./color/colorimeter'),
+  require('./atlas/ph'),
+  // require('./one-wire/temp')
 ];
 
 exports.init = function(valueReporter) {
