@@ -15,10 +15,20 @@
   <script src="/lib/bootstrap.min.js"></script>
 
   <script src="http://www.amcharts.com/lib/amcharts.js"></script>
+
+  <style>
+    .sensor-panel {
+      float:left;
+      height:100%;
+      margin-left: 200px;
+    }
+  </style>
 </head>
 
 <!--<body onload="sensorNow(); updateClock(); setInterval('updateClock()', 1000 );">  -->
 <body class="ui-widget-content" style="border:0;">
+
+
 
   <div class="navbar navbar-inverse navbar-fixed-top">
     <div class="navbar-inner center">
@@ -29,7 +39,7 @@
         <img src="/img/sensa_word.png" style="height:50px; float: left; padding: 5px 20px 0 0">
         <ul class="nav nav-pills" style="margin: 10px 10px 0 0">
           <li style="padding: 5px" class="active"><a href="#Recipe" data-toggle="pill">Experiment</a></li>
-          <li style="padding: 5px"><a href="#Sensa" data-toggle="pill">Sensa</a></li>
+          <!--li style="padding: 5px"><a href="#Sensa" data-toggle="pill">Sensa</a></li-->
           <li style="padding: 5px"><a href="#Liquid" data-toggle="pill">Liquid</a></li>
           <li style="padding: 5px"><a href="#Light" data-toggle="pill">Light</a></li>
           <!-- <img src="/img/zephyr_logo.png" style="height: 40px; width: auto; float: left; padding: 12px"> -->
@@ -39,10 +49,64 @@
     </div>
   </div>
 
+  <div class="sensor-panel" id="sensorPanel">
+    <!--div class="center" style="margin-top: 20px"-->
+      <table><tbody>
+        <tr>
+          <td>
+            <div id="sensor-switch" class="switch switch-small" data-on="success" data-off="">
+              <input type="checkbox"/>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <h4>Temperature</h4>
+          </td>
+          <td>
+            <h4 id="liquidTemp" class="sensa">&nbsp;</h4>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <h4>pH</h4>
+          </td>
+          <td>
+            <h4 id="pH" class="sensa">&nbsp;</h4>
+          </td>
+        </tr>
+        <tr>
+            <td>
+              <h4>Redox</h4>
+            </td>
+            <td>
+              <h4 id="Redox" class="sensa">&nbsp;</h4>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <h4>Optical</h4>
+            </td>
+            <td>
+              <h4 id="Optical" class="sensa">&nbsp;</h4>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <h4>Flow</h4>
+            </td>
+            <td>
+              <h4 id="Flow" class="sensa">&nbsp;</h4>
+            </td>
+          </tr>
+        </tbody></table>
+    <!--/div-->
+  </div>
+
 
   <div class="tab-content">
 
-    <div class="tab-pane" id="Liquid">
+    <div class="tab-pane" id="Liquid" style="float: left">
 
       <table>
         <tr>
@@ -119,6 +183,21 @@
             </div>
           </td>
           <td>
+            <div class ="well Activate center">
+                  <h4>Load</h4>
+                  <div id="LoadPump" class="switch switch-large" data-on="success" data-off="">
+                    <input type="checkbox"/>
+                  </div>
+                  <h4>Recirc</h4>
+                  <div id="Recirc" class="switch switch-large" data-on="success" data-off="">
+                      <input type="checkbox"/>
+                  </div>
+                  <h4>Mix</h4>
+                  <div id="mixDirection" class="switch switch-small" data-on-label="Counter" data-off-label="Clock" data-on="default" data-off="">
+                    <input type="checkbox"/>
+                  </div>
+                  <div id="slider-mix"></div>
+            </div>
             <!-- <div class="well Incubate center">
             <h4>Thermocyle</h4>
               <div class="fieldSize">
@@ -132,14 +211,18 @@
                     <input type="checkbox"/>
               </div>
             </div> -->
-            <div class="well Incubate center">
+
+
+            <!-- <div class="well Incubate center">
                 <h4>Incubate</h4>
                 <input type="text" id="amountIncubate" style="border:0; color:#00CCFF; font-weight:bold; width: 66px; margin-bottom: 0px">
                 <div id="slider-incubate"></div>
                 <div id="Incubate" class="switch" data-on="success" data-off="">
                       <input type="checkbox"/>
                 </div>
-            </div>
+            </div> -->
+
+
             <!--    <div class="fieldSize">
                   <div>
                     <select id="thermocycle-schedule">
@@ -158,7 +241,7 @@
 
     </div>
 
-    <div class="tab-pane" id="Light">
+    <div class="tab-pane" id="Light" style="float:left">
       <div class="center" style="margin-top: 20px">
           <table><tbody>
               <tr>
@@ -223,97 +306,24 @@
 
     </div>
 
-    <div class="tab-pane" id="Sensa">
-      <div class="center" style="margin-top: 20px">
-          <table><tbody>
-            <tr>
-              <td>
-                <div id="sensaTemp" class="switch switch-small" data-on="success" data-off="">
-                      <input type="checkbox"/>
-                </div>
-              </td>
-              <td>
-                <h4>Temperature</h4>
-              </td>
-              <td>
-                  <h4 id ="liquidTemp" class="sensa">&nbsp;</h4>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <div id="sensaPH" class="switch switch-small" data-on="success" data-off="">
-                      <input type="checkbox"/>
-                </div>
-              </td>
-              <td>
-                <h4>pH</h4>
-              </td>
-              <td>
-                <h4 id ="pH" class="sensa">&nbsp;</h4>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <div id="sensaRedox" class="switch switch-small" data-on="success" data-off="">
-                      <input type="checkbox"/>
-                </div>
-              </td>
-              <td>
-                <h4>Redox</h4>
-              </td>
-              <td>
-                <h4 id ="Redox" class="sensa">&nbsp;</h4>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <div id="sensaOptical" class="switch switch-small" data-on="success" data-off="">
-                      <input type="checkbox"/>
-                </div>
-              </td>
-              <td>
-                <h4>Optical</h4>
-              </td>
-              <td>
-                <h4 id ="Optical" class="sensa">&nbsp;</h4>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <div id="sensaFlow" class="switch switch-small" data-on="success" data-off="">
-                      <input type="checkbox"/>
-                </div>
-              </td>
-              <td>
-                <h4>Flow</h4>
-              </td>
-              <td>
-                <h4 id ="Flow" class="sensa">&nbsp;</h4>
-              </td>
-            </tr>
-          </tbody></table>
-      </div>
-    </div>
-
-    <div class="tab-pane active" id="Recipe">
+    <div class="tab-pane active" id="Recipe" style="float: left">
 
       <div class ="well Activate center">
         <div class="dropdown" style="margin: 10px 0">
-            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownExperiments" data-toggle="dropdown" aria-expanded="true">
               Choose Experiment
               <span class="caret"></span>
             </button>
-            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-              <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Sensa</a></li>
-              <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Octopus</a></li>
-              <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Hypha</a></li>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownExperiments">
+              <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Arkeon</a></li>
+              <li role="presentation"><a role="menuitem" tabindex="-1" href="#" id="Hypha">Hypha</a></li>
               <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Zome</a></li>
             </ul>
         </div>
 
         <div class="input-group">
           <!-- <span class="input-group-addon" id="basic-addon1">@</span> -->
-          <input type="text" class="form-control" placeholder="Recipe Name" aria-describedby="basic-addon1">
+          <input type="text" class="form-control" id="RecipeName" placeholder="Recipe Name" aria-describedby="basic-addon1">
         </div>
         <div class="input-group">
           <!-- <span class="input-group-addon" id="basic-addon1">@</span> -->
@@ -339,7 +349,7 @@
           <!-- <span class="input-group-addon" id="basic-addon1">@</span> -->
           <input type="text" class="form-control" placeholder="Air" aria-describedby="basic-addon1">
         </div>
-        <button type="button" id="sensorNow" class="btn btn-primary">Ark</button>
+        <button type="button" id="runExperiment" class="btn btn-primary">Ark</button>
 
       </div>
     </div>
@@ -362,7 +372,20 @@
   </div>
 
 <script>
-//switch between tabs
+// drop down Experiments menu
+ 
+    jQuery("#Hypha").click(function(e){
+      console.log("Hypha");
+      //e.preventDefault();
+      //$('#RecipeName').text("Hypha");
+      document.getElementById("#Hypha").value = "aa";
+    });
+
+
+  // $('#dropdownExperiments').on('switch-change', function (e, data) {
+</script>
+
+<script>
 
     $('#myTab a[href="#Liquid"]').click(function (e) {
       e.preventDefault()
@@ -389,35 +412,20 @@
       $(this).tab('show')
     });
 
-
 </script>
 
 
 <script>
+// Run Experiment button
+      $('#runExperiment').on('click', function (e, data) {
+          socket.emit('command', {state: true , module:'Demo'});
+          console.log(data);
+      });
+
 // On/Off sensa switches
 
-      $('#sensaTemp').on('switch-change', function (e, data) {
-          socket.emit('command', {state: data.value , module:'sensaTemp'});
-          console.log(data);
-      });
-
-      $('#sensaPH').on('switch-change', function (e, data) {
-          socket.emit('command', {state: data.value , module:'sensaPH'});
-          console.log(data);
-      });
-
-      $('#sensaRedox').on('switch-change', function (e, data) {
-          socket.emit('command', {state: data.value , module:'sensaRedox'});
-          console.log(data);
-      });
-
-      $('#sensaOptical').on('switch-change', function (e, data) {
-          socket.emit('command', {state: data.value , module:'sensaOptical'});
-          console.log(data);
-      });
-
-      $('#sensaFlow').on('switch-change', function (e, data) {
-          socket.emit('command', {state: data.value , module:'sensaFlow'});
+      $('#sensor-switch').on('switch-change', function (e, data) {
+          socket.emit('command', {state: data.value , module:'sensors'});
           console.log(data);
       });
 
@@ -463,6 +471,12 @@
           console.log(data);
       });
 
+      $('#mixDirection').on('switch-change', function (e, data) {
+          socket.emit('command', {state: data.value , module:'mixDirection'});
+          console.log(data);
+      });
+
+
 </script>
 
 
@@ -471,11 +485,15 @@
 
     // var host = window.document.location.host.replace(/:.*/, '');
     //   console.log(host);
-    // var socket = io.connect(host + ':8088');
+    //var socket = io.connect('/');
 
     // var socket = io.connect('http://192.168.1.225:8088'); //James' Router
     var socket = io.connect('http://25.124.233.64:8088'); //Hamachi
     // var socket = io.connect('http://192.168.255.100:8088'); //Frank's Router
+
+    socket.on('connect', function() { console.log('websocket connected'); });
+    socket.on('error', function(err)  { console.log('websocket error: ' + err); });
+    socket.on('connect_failed', function(err)  { console.log('websocket error: ' + err); });
 
     socket.on('sensor_reading', function(data){
       console.log('sensor_reading:' + data);
@@ -494,25 +512,57 @@
     });
 
     socket.on('sensor_report', function(data){
-      console.log('Sensor Report');
-      if ( data.measurement.label == "temp" ) {
-        var tempF = ((1.8)*data.measurement.datum + 32).toFixed(2);
+      console.log('Sensor Report: ' + JSON.stringify(data));
+      if (data === undefined || data.measurement === undefined || data.measurement.datum === undefined) {
+        console.log('null sensor report');
+        return;
+      }
+
+      var datum = data.measurement.datum;
+
+      if ( data.measurement.label === "temp" ) {
+        var tempF = ((1.8)*datum + 32).toFixed(2);
         $('#liquidTemp').text(tempF + ' ˚F');
       }
-      if ( data.measurement.label == "pH" ) {
-        $('#pH').text(data.measurement.datum);
+      else if ( data.measurement.label === "pH" ) {
+        $('#pH').text(datum);
       }
-      if ( data.measurement.label == "redox" ) {
-        $('#Redox').text(data.measurement.datum);
+      else if ( data.measurement.label === "ORP" ) {
+        $('#Redox').text(datum);
       }
-      if ( data.measurement.label == "optical" ) {
-        $('#Optical').text(data.measurment.datum);
+      else if ( data.measurement.label === "optical" ) {
+        $('#Optical').text(datum);
       }
-      if ( data.measurement.label == "flow" ) {
-        $('#Flow').text(data.measurment.datum);
+      else if ( data.measurement.label === "flow" ) {
+        $('#Flow').text(datum);
       }
+
+      if (datum !== data.measurement.datum) console.log('msg changed somehow');
     });
 
+  </script>
+
+  <script>
+  //Modulation for Mixer
+    $(function() {
+    $( "#slider-mix" ).slider({
+      // range: true,
+      min: 0,
+      max: 50,
+      values: [0],
+      slide: function( event, ui ) {
+        $( "#amountMix" ).val(ui.values[ 0 ] + "%");
+
+        var mixVal = $( "#slider-mix" ).slider( "values", 0 );
+        console.log('Mix Speed:', mixVal );
+        socket.emit('command', {state: true , module:'mixSpeed', value: mixVal});
+      }
+    });
+    // $( "#amountGrow" ).val( $( "#slider-grow" ).slider( "values", 0 ) + "%");
+    $( "#slider-mix" ).slider( "value", 0 );
+    $( "#slider-mix" ).slider("enable");
+
+  });
   </script>
 
   <script>
@@ -875,10 +925,7 @@ function handleZoom(event) {
 }
 
 </script>
-
-<script type="text/javascript">
-
-
+<script>
 //     function updateClock ( )
 //     {
 //       var currentTime = new Date ( );
@@ -947,6 +994,5 @@ function handleZoom(event) {
 
 //
 </script>
-
 </body>
 </html>

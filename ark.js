@@ -1,3 +1,117 @@
+///////////////////////////////////////////////////////////////
+// demo
+
+function demo() {
+  function lightsOff() {
+    for (var i = 0; i < 3; i++) arduino.analogWrite(gPins.RGB+i, 0);
+  }
+
+  function load() {
+    lightsOff();
+    arduino.digitalWrite(gPins.NOvalve, RELAYON); 
+    arduino.digitalWrite(gPins.NCvalve, RELAYON); 
+    arduino.digitalWrite(gPins.load,    true);
+    arduino.digitalWrite(gPins.recirc,  RELAYOFF);
+    blueToAqua(20000, recirc);   // takes 20 seconds then calls recirc()
+  }
+  
+  function recirc() {
+    lightsOff();
+    arduino.digitalWrite(gPins.NOvalve, RELAYOFF); 
+    arduino.digitalWrite(gPins.NCvalve, RELAYOFF); 
+    arduino.digitalWrite(gPins.load,    false);
+    arduino.digitalWrite(gPins.recirc,  RELAYON);
+    colorCycle(20000, recircDone);  // takes 20 seconds, then calls recircDone()
+  }
+
+  function recircDone() {
+    lightsOff();
+    arduino.digitalWrite(gPins.NOvalve, RELAYOFF); 
+    arduino.digitalWrite(gPins.NCvalve, RELAYOFF); 
+    arduino.digitalWrite(gPins.load,    false);
+    arduino.digitalWrite(gPins.recirc,  RELAYOFF);
+    flashGreen();
+  }
+
+  function flashGreen() {
+    var flashOnTime =  200;  // milliseconds
+    var flashOffTime = 200;
+    var numFlashes = 5;      // number of on-off cycles
+    var lightOn = false;     // initial state
+    var count = 0;
+
+    lightsOff();
+
+    (function recurse() {
+      if (lightOn) {
+        arduino.analogWrite(gPins.RGB+1, 0);
+        if (count < numFlashes) setTimeout(recurse, flashOffTime);
+        lightOn = !lightOn;
+        count++;
+      }
+      else {
+        arduino.analogWrite(gPins.RGB+1, 255);
+        if (count < numFlashes) setTimeout(recurse, flashOnTime);
+        lightOn = !lightOn;
+      }
+      //if (count >= numFlashes) lightsOff();
+    })();
+  }
+
+  // steps blue to max, then green
+  function blueToAqua(duration, callback) {
+    var steps = 255;
+    var stepTime = duration / (steps * 2);
+    var step = 0;
+
+    (function recurse() {
+      if (step <= steps) {
+        arduino.analogWrite(gPins.RGB+1, step);
+        step++;
+      }
+      else if (step <= 2*steps) {
+        arduino.analogWrite(gPins.RGB+2, step-steps);
+        step++;
+      }
+      else {
+        return callback();
+      }
+      
+      setTimeout(recurse, stepTime);
+    })();
+  }
+
+  // steps red to max, then green, then blue
+  function colorCycle(duration, callback) {
+    var steps = 255;
+    var stepTime = duration / (3 * steps);
+    var step = 0;
+
+    (function recurse() {
+      if (step <= steps) {
+        arduino.analogWrite(gPins.RGB, step);
+        step++;
+      }
+      else if (step <= 2*steps) {
+        arduino.analogWrite(gPins.RGB+1, step-steps);
+        step++;
+      }
+      else if (step <= 3*steps) {
+        arduino.analogWrite(gPins.RGB+2, step-2*steps);
+        step++;
+      }
+      else {
+        return callback();
+      }
+      
+      setTimeout(recurse, stepTime);
+    })();
+  }
+
+  // start the chain
+  load();
+}
+
 //////////////////////////////////////////////////////////////////////////////
 // cloud database
 var cradle = require('cradle');
@@ -114,6 +228,8 @@ serialPort.on("error", function(err) {
   console.log('error opening serial port');
 });
 
+//var readFromSerial = false;
+
 serialPort.on("open", function () {
   console.log('serial port opened');
 
@@ -124,6 +240,7 @@ serialPort.on("open", function () {
 
   serialPort.on('data', function(data) {
     console.log(data);
+    //if (readFromSerial == false) { demo(); readFromSerial = true;}
     try {
       msg = JSON.parse(data);
       if (msg.measurement != undefined) {
@@ -147,11 +264,13 @@ arduino.digitalWrite = function(pin, value) {
   else if (value === false) value = 0;
   msg = {writeD: {pin:pin, value:value}};
   serialPort.write(JSON.stringify(msg) + '\n');
+  //console.log(JSON.stringify(msg));
 }
 
 arduino.analogWrite = function(pin, value) {
   msg = {writeA: {pin:pin, value:value}};
   serialPort.write(JSON.stringify(msg) + '\n');
+  //console.log(JSON.stringify(msg));
 }
 
 
@@ -242,6 +361,7 @@ sensa.on('connect', function(){
 
 sensa.on('command', function(data){
   console.log(data);
+
   if(data.module === "lights" && data.values) {
     console.log("light command receive: "+data.values.red+" "+data.values.green+" "+data.values.blue+"\n");
     if (data.relayID === 'Indicators') {
@@ -301,14 +421,16 @@ var gPins = {
   dispense: 40,
   NOvalve: 42,
   NCvalve: 44,
-  heater: 46,
-  air: 48,
-  growlight: 50,
+  heater: 52,
+  air: 50,
+  growlight: 48,
   growlux: 2,
   RGB: 4,
-  dose: 7,
+  dose: 8,
   mixSpeed: 11,
-  mixDirection: 12
+  mixDirection: 12,
+
+  load: 7   //same as dose for now
 }
 
 var RELAYON = false, RELAYOFF = true;
@@ -331,54 +453,28 @@ io.sockets.on('connection', function (socket) {
   socket.on('command', function (data) {
   	console.log(data);
 
-    // if ( data.module === "SensaOn" ) {
-    //     if (data.state == true) {
-    //       serialPort.write('{setEntry:{index:0,msMeasurementPeriod:2000}}\n{setEntry:{index:4,msMeasurementPeriod:2000}}\n');
-    //     }
-    //     else {
-    //       serialPort.write('{setEntry:{index:0,msMeasurementPeriod:0}}\n{setEntry:{index:4,msMeasurementPeriod:0}}\n');
-    //     }
-    //
-    // }
-    if ( data.module === "sensaTemp" ) {
-        if (data.state == true) {
-          serialPort.write('{setEntry:{index:0,msMeasurementPeriod:2000}}\n');
+    if (data.module === "Demo") {
+      demo();
+
+    } else if ( data.module === "sensors" ) {
+      // TODO: issue command {entries:} and parse the result, and loop through it
+      // TODO: change Hypha so that sensor entries have an enabled flag, instead of changing measurement period
+      var numSensors = 7;
+      msMeasurementTime = data.state ? 1000 : 0;
+      var period = data.state ? numSensors*msMeasurementTime : 0;
+      var msg = {setEntry: {index:0, msMeasurementPeriod:period}};
+
+      // offset each sensor reading by a bit
+      function setSensor() {
+        var cmd = JSON.stringify(msg);
+        console.log(cmd);
+        serialPort.write(cmd + '\n');
+        msg.setEntry.index++;
+        if (msg.setEntry.index <= numSensors) {
+           setTimeout(setSensor, msMeasurementTime);
         }
-        else {
-          serialPort.write('{setEntry:{index:0,msMeasurementPeriod:0}}\n');
-        }
-
-    } else if ( data.module === "sensaPH" ) {
-          if (data.state == true) {
-            serialPort.write('{setEntry:{index:4,msMeasurementPeriod:2000}}\n');
-          }
-          else {
-            serialPort.write('{setEntry:{index:4,msMeasurementPeriod:0}}\n');
-          }
-
-    } else if ( data.module === "sensaRedox" ) {
-          if (data.state == true) {
-            serialPort.write('{setEntry:{index:2,msMeasurementPeriod:2000}}\n');
-          }
-          else {
-            serialPort.write('{setEntry:{index:2,msMeasurementPeriod:0}}\n');
-          }
-
-    } else if ( data.module === "sensaOptical" ) {
-          if (data.state == true) {
-            serialPort.write('{setEntry:{index:5,msMeasurementPeriod:2000}}\n');
-          }
-          else {
-            serialPort.write('{setEntry:{index:5,msMeasurementPeriod:0}}\n');
-          }
-
-    } else if ( data.module === "sensaFlow" ) {
-          if (data.state == true) {
-            serialPort.write('{setEntry:{index:6,msMeasurementPeriod:2000}}\n');
-          }
-          else {
-            serialPort.write('{setEntry:{index:6,msMeasurementPeriod:0}}\n');
-          }
+      }
+      setSensor();
 
     } else if (data.module === "lights" && data.values) {
           if (data.relayID === 'Indicators') {
@@ -390,10 +486,14 @@ io.sockets.on('connection', function (socket) {
 
     } else if ( data.module === "LoadPump" ) {
           if (data.state == true) {
-            arduino.digitalWrite(22, true);  // RelayHighV 1 for plugin pump - on
+            arduino.digitalWrite(gPins.load, true);  // RelayHighV 1 for plugin pump - on
+            // arduino.digitalWrite(gPins.NCvalve, true);
+            // arduino.digitalWrite(gPins.NOvalve, true);
           }
           else {
-            arduino.digitalWrite(22, false); // RelayHighV 1 plugin pump - off
+            arduino.digitalWrite(gPins.load, false); // RelayHighV 1 plugin pump - off
+            // arduino.digitalWrite(gPins.NCvalve, false);
+            // arduino.digitalWrite(gPins.NOvalve, false);
           }
 
     } else if ( data.module === "RecircValve" ) {
@@ -404,7 +504,20 @@ io.sockets.on('connection', function (socket) {
             arduino.digitalWrite(gPins.NOvalve, RELAYOFF); // RelayLowV 1 NO valve - closed
           }
 
-    } else if ( data.module === "DrainValve" ) {
+    } else if (data.module === "mixSpeed") {
+          arduino.analogWrite(gPins.mixSpeed, data.value);
+          console.log('Mix Speed :' + data.value);
+    }
+
+    else if (data.module === "mixDirection"){
+      if (data.state == true){
+          arduino.digitalWrite(gPins.mixDirection, true);
+      } else {
+          arduino.digitalWrite(gPins.mixDirection, false);
+      }
+    }
+
+    else if ( data.module === "DrainValve" ) {
           if (data.state == true) {
             arduino.digitalWrite(gPins.NCvalve, RELAYON); // RelayLowV 2 NC valve - open
           }
@@ -456,10 +569,10 @@ io.sockets.on('connection', function (socket) {
 
     } else if (data.module == "DosePump") {
           if (data.state == true) {
-            arduino.digitalWrite(5, true); //Mosfet on
+            arduino.digitalWrite(gPins.dose, true); //Mosfet on
           }
           else {
-            arduino.digitalWrite(5, false); //Mosfet off
+            arduino.digitalWrite(gPins.dose, false); //Mosfet off
           }
 
     }else if ( data.module === "thermocycle-off" ) {
