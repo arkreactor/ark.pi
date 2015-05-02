@@ -3,7 +3,14 @@
 
 function demo() {
   function lightsOff() {
-    for (var i = 0; i < 3; i++) arduino.analogWrite(gPins.RGB+i, 0);
+    lights(0, 0, 0);
+  }
+  
+  // 0-255
+  function lights(red, green, blue) {
+    arduino.analogWrite(gPins.RGB, red);
+    arduino.analogWrite(gPins.RGB+1, green);
+    arduino.analogWrite(gPins.RGB+2, blue);
   }
 
   function load() {
@@ -12,25 +19,27 @@ function demo() {
     arduino.digitalWrite(gPins.NCvalve, RELAYON); 
     arduino.digitalWrite(gPins.load,    true);
     arduino.digitalWrite(gPins.recirc,  RELAYOFF);
-    blueToAqua(20000, recirc);   // takes 20 seconds then calls recirc()
+    blueToAqua(40000, recirc);
   }
   
   function recirc() {
-    lightsOff();
+    //lightsOff();
+    lights(255, 0, 128);
     arduino.digitalWrite(gPins.NOvalve, RELAYOFF); 
     arduino.digitalWrite(gPins.NCvalve, RELAYOFF); 
     arduino.digitalWrite(gPins.load,    false);
     arduino.digitalWrite(gPins.recirc,  RELAYON);
-    colorCycle(20000, recircDone);  // takes 20 seconds, then calls recircDone()
+    //colorCycle(20000, recircDone);
+    setTimeout(recircDone, 20000);
   }
 
   function recircDone() {
-    lightsOff();
+    //lightsOff();
     arduino.digitalWrite(gPins.NOvalve, RELAYOFF); 
     arduino.digitalWrite(gPins.NCvalve, RELAYOFF); 
     arduino.digitalWrite(gPins.load,    false);
     arduino.digitalWrite(gPins.recirc,  RELAYOFF);
-    flashGreen();
+    //flashGreen();
   }
 
   function flashGreen() {
@@ -66,11 +75,11 @@ function demo() {
 
     (function recurse() {
       if (step <= steps) {
-        arduino.analogWrite(gPins.RGB+1, step);
+        arduino.analogWrite(gPins.RGB+2, step);
         step++;
       }
       else if (step <= 2*steps) {
-        arduino.analogWrite(gPins.RGB+2, step-steps);
+        arduino.analogWrite(gPins.RGB+1, step-steps);
         step++;
       }
       else {

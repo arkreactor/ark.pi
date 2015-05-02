@@ -38,10 +38,10 @@
         <img src="/img/sensa_circuit.png" style="height:50px; float: left; padding: 5px 0">
         <img src="/img/sensa_word.png" style="height:50px; float: left; padding: 5px 20px 0 0">
         <ul class="nav nav-pills" style="margin: 10px 10px 0 0">
-          <li style="padding: 5px" class="active"><a href="#Recipe" data-toggle="pill">Experiment</a></li>
           <!--li style="padding: 5px"><a href="#Sensa" data-toggle="pill">Sensa</a></li-->
-          <li style="padding: 5px"><a href="#Liquid" data-toggle="pill">Liquid</a></li>
+          <li style="padding: 5px" class="active"><a href="#Liquid" data-toggle="pill">Liquid</a></li>
           <li style="padding: 5px"><a href="#Light" data-toggle="pill">Light</a></li>
+          <li style="padding: 5px"><a href="#Recipe" data-toggle="pill">Experiment</a></li>
           <!-- <img src="/img/zephyr_logo.png" style="height: 40px; width: auto; float: left; padding: 12px"> -->
 
        </ul>
@@ -106,7 +106,7 @@
 
   <div class="tab-content">
 
-    <div class="tab-pane" id="Liquid" style="float: left">
+    <div class="tab-pane active" id="Liquid" style="float: left">
 
       <table>
         <tr>
@@ -182,22 +182,8 @@
 
             </div>
           </td>
-          <td>
-            <div class ="well Activate center">
-                  <h4>Load</h4>
-                  <div id="LoadPump" class="switch switch-large" data-on="success" data-off="">
-                    <input type="checkbox"/>
-                  </div>
-                  <h4>Recirc</h4>
-                  <div id="Recirc" class="switch switch-large" data-on="success" data-off="">
-                      <input type="checkbox"/>
-                  </div>
-                  <h4>Mix</h4>
-                  <div id="mixDirection" class="switch switch-small" data-on-label="Counter" data-off-label="Clock" data-on="default" data-off="">
-                    <input type="checkbox"/>
-                  </div>
-                  <div id="slider-mix"></div>
-            </div>
+          <!-- <td>         -->
+
             <!-- <div class="well Incubate center">
             <h4>Thermocyle</h4>
               <div class="fieldSize">
@@ -234,6 +220,17 @@
                     </select>
                   </div>
                </div> -->
+          <!-- </td> -->
+        </tr>
+        <tr>
+          <td>
+            <div class="Activate center">
+              <h4>Mix</h4>
+                <div id="mixDirection" class="switch switch-large" data-on-label="Counter" data-off-label="Clock" data-on="default" data-off="">
+                  <input type="checkbox"/>
+                </div>
+                <div id="slider-mix" style="margin-top: 20px"></div>
+            </div>
           </td>
         </tr>
       </tbody>
@@ -306,7 +303,7 @@
 
     </div>
 
-    <div class="tab-pane active" id="Recipe" style="float: left">
+    <div class="tab-pane" id="Recipe" style="float: left">
 
       <div class ="well Activate center">
         <div class="dropdown" style="margin: 10px 0">
@@ -323,33 +320,31 @@
 
         <div class="input-group">
           <!-- <span class="input-group-addon" id="basic-addon1">@</span> -->
-          <input type="text" class="form-control" id="RecipeName" placeholder="Recipe Name" aria-describedby="basic-addon1">
+          <input type="text" class="form-control" id="RecipeName" placeholder="Recipe Name" aria-describedby="basic-addon1" style="font-weight:bold">
         </div>
         <div class="input-group">
           <!-- <span class="input-group-addon" id="basic-addon1">@</span> -->
-          <input type="text" class="form-control" placeholder="Ingredients" aria-describedby="basic-addon1">
+          <input type="text" class="form-control" id="RecipeIngredients" placeholder="Ferment" aria-describedby="basic-addon1">
         </div>
         <div class="input-group">
           <!-- <span class="input-group-addon" id="basic-addon1">@</span> -->
-          <input type="text" class="form-control" placeholder="Time" aria-describedby="basic-addon1">
+          <input type="text" class="form-control" id="RecipeTime" placeholder="Time" aria-describedby="basic-addon1">
         </div>
         <div class="input-group">
           <!-- <span class="input-group-addon" id="basic-addon1">@</span> -->
-          <input type="text" class="form-control" placeholder="Light" aria-describedby="basic-addon1">
+          <input type="text" class="form-control" id="RecipeLight" placeholder="Light" aria-describedby="basic-addon1">
         </div>
         <div class="input-group">
           <!-- <span class="input-group-addon" id="basic-addon1">@</span> -->
-          <input type="text" class="form-control" placeholder="Heat" aria-describedby="basic-addon1">
+          <input type="text" class="form-control" id="RecipeHeat" placeholder="Heat" aria-describedby="basic-addon1">
         </div>
         <div class="input-group">
-          <!-- <span class="input-group-addon" id="basic-addon1">@</span> -->
-          <input type="text" class="form-control" placeholder="Feed" aria-describedby="basic-addon1">
+          <input type="text" class="form-control" id="RecipeFeed" placeholder="Feed" aria-describedby="basic-addon1">
         </div>
         <div class="input-group">
-          <!-- <span class="input-group-addon" id="basic-addon1">@</span> -->
-          <input type="text" class="form-control" placeholder="Air" aria-describedby="basic-addon1">
+          <input type="text" class="form-control" id="RecipeAir" placeholder="Air" aria-describedby="basic-addon1">
         </div>
-        <button type="button" id="runExperiment" class="btn btn-primary">Ark</button>
+        <button type="button" id="runExperiment" class="btn btn-primary">Activate</button>
 
       </div>
     </div>
@@ -373,12 +368,18 @@
 
 <script>
 // drop down Experiments menu
- 
+
     jQuery("#Hypha").click(function(e){
       console.log("Hypha");
       //e.preventDefault();
       //$('#RecipeName').text("Hypha");
-      document.getElementById("#Hypha").value = "aa";
+      document.getElementById("RecipeName").value =        "Hypha";
+      document.getElementById("RecipeIngredients").value = "Water Kefir";
+      document.getElementById("RecipeTime").value =        "24 hrs";
+      document.getElementById("RecipeLight").value =       "2hr pulses";
+      document.getElementById("RecipeHeat").value =        "75-81";
+      document.getElementById("RecipeFeed").value =        "Cane Sugar";
+      document.getElementById("RecipeAir").value =         "10 pulses: 4 min";
     });
 
 
@@ -483,13 +484,12 @@
 <script>
 //send sensa up to UI
 
+    // var socket = io.connect(window.document.location.host);
+    // var socket = io.connect('/');
     // var host = window.document.location.host.replace(/:.*/, '');
-    //   console.log(host);
-    //var socket = io.connect('/');
-
     // var socket = io.connect('http://192.168.1.225:8088'); //James' Router
-    var socket = io.connect('http://25.124.233.64:8088'); //Hamachi
-    // var socket = io.connect('http://192.168.255.100:8088'); //Frank's Router
+    // var socket = io.connect('http://25.124.233.64:8088'); //Hamachi
+    var socket = io.connect('http://192.168.255.100:8088'); //Frank's Router
 
     socket.on('connect', function() { console.log('websocket connected'); });
     socket.on('error', function(err)  { console.log('websocket error: ' + err); });
@@ -548,7 +548,7 @@
     $( "#slider-mix" ).slider({
       // range: true,
       min: 0,
-      max: 50,
+      max: 200,
       values: [0],
       slide: function( event, ui ) {
         $( "#amountMix" ).val(ui.values[ 0 ] + "%");
