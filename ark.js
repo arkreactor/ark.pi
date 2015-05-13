@@ -45,7 +45,6 @@ hypha.findDevices(function(device) {
 
   console.log('Hypha device found: ' + device.deviceID);
   gSerialDevices[device.deviceID] = device;
-  //printProperties(gSerialDevices);
 
   // add our read function
   device.serialPort.on('data', function(data) {
@@ -63,12 +62,13 @@ hypha.findDevices(function(device) {
   });
   
   // add pin write methods
+  // pin can be either an integer or an object with a pin property
   device.digitalWrite = function(pin, value) {
     // convert to integer
     if (value === true) value = 1;
     else if (value === false) value = 0;
     
-    // if pin is an object and has an activeLow property, invert value
+    // if pin is an object and has a true activeLow property, invert value
     if (typeof pin === 'object') {
       if (pin.activeLow) value = 1 & ~value;
       pin = pin.pin;      // substitute actual pin number for object
@@ -85,6 +85,14 @@ hypha.findDevices(function(device) {
     this.serialPort.write(JSON.stringify(msg) + '\n');
     //console.log(JSON.stringify(msg));
   }
+  
+  commands.syncDeviceState(device);
+
+  // report actuator status to any attached clients
+  var report = {}
+  report[device.deviceID] = device.getStatus();
+  blastToClients('status_report', report);
+  console.log(JSON.stringify(report));
 });
 
 ///////////////////////////////////////////////////////////////////////////
@@ -122,8 +130,11 @@ io.sockets.on('connection', function (socket) {
   });
 
   socket.on('command', function (data) {
+    /*if (typeof data === 'string') data = JSON.parse(data);
+    console.log(JSON.stringify(data));
+    printProperties(gSerialDevices);*/
 
-    // hack in an ID for now
+    // hack in an ID for now--client should send the deviceID
     if (!data.deviceID) data.deviceID = 'none';
   	console.log(data);
 

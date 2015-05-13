@@ -4,32 +4,105 @@ var demo = require('./demo');
 // var g_cronClient = null;
 
 
-// TODO: store pin values with device description
-// store an object which decribes whether the pin is active low.
+// device state properties:
+// - pin: number
+// - state: number or boolean, represents current state of pin
+// - defaultState: number of boolean, defaults to false
+// - activeLow: optional boolean for active low relays
 // Active high is assumed unless activeLow === true
-var pins = {
-  recirc:       {pin:38, activeLow:true},
-  dispense:     {pin:40, activeLow:true},
-  NOvalve:      {pin:42, activeLow:true},
-  NCvalve:      {pin:44, activeLow:true},
-  heater:       {pin:52, activeLow:true},
-  air:          {pin:50, activeLow:true},
-  growlight:    {pin:48, activeLow:true},
-  growlux:      {pin:2},
-  RGB:          {pin:4},
-  dose:         {pin:8},
-  mixSpeed:     {pin:11},
-  mixDirection: {pin:12},
+// TODO: store pin values with device description in microcontroller
+var gHyphaDeviceActuatorMap = {
+  Kefir:{
+    RecircPump:    {pin:38, activeLow:true},
+    DispenseValue: {pin:40, activeLow:true},
+    RecircValve:   {pin:42, activeLow:true},
+    DrainValve:    {pin:44, activeLow:true},
+    growRelay:     {pin:48, activeLow:true},
+    growLight:     {pin:2,  defaultState:0},
+    AirPump:       {pin:50, activeLow:true},
+    Heater:        {pin:52, activeLow:true},
+    mixSpeed:      {pin:11, defaultState:0},
+    mixDirection:  {pin:12},
+    ledRed:        {pin:4,  defaultState:0},
+    ledGreen:      {pin:5,  defaultState:0},
+    ledBlue:       {pin:6,  defaultState:0},
+    LoadPump:      {pin:7}, 
+    DosePump:      {pin:8}
+  },
 
-  load:         {pin:7}   //same as dose for now
+  Hypha: {
+
+  },
+
+  Zephyr: {
+
+  }
+};
+
+// call so that you can query the state of the device's actuators by calling getStatus
+exports.syncDeviceState = function(device) {
+  if (!device.deviceID) {
+    console.log('pin map not assigned because deviceID is empty: ' + deviceID);
+    return;
+  }
+
+  var actuatorMap = gHyphaDeviceActuatorMap[device.deviceID];
+  if (!actuatorMap) {
+    console.log('pin map not assigned because deviceID not found: ' + deviceID);
+    return;
+  }
+
+  // clone -- will be bad if contains functions...
+  device.actuators = JSON.parse(JSON.stringify(actuatorMap));
+
+  // because we cannot query the state of microcontroller pins at the moment,
+  // go through and set every actuator to its default state
+  for (var name in device.actuators) {
+    if (device.actuators.hasOwnProperty(name)) {
+      var a = device.actuators[name];
+
+      // for convenience, define the default state for the actuator
+      if (a.defaultState === undefined) a.defaultState = false;
+
+      var type = typeof a.defaultState;
+      if (type === 'boolean') {
+        //console.log('setting pin ' + a.pin + ' = ' + a.defaultState);
+        device.digitalWrite(a, a.defaultState);
+        a.state = a.defaultState;
+      }
+      else if (type === 'number') {
+        //console.log('setting pin ' + a.pin + ' = ' + a.defaultState);
+        device.analogWrite(a, a.defaultState);
+        a.state = a.defaultState;
+      }
+      else if (a.setter) a.setter(device);
+      else {
+        console.log("error: don't know how to set default value for '" + name + "'");
+      }
+
+    }
+  }
+
+  // return a json object describing the state of the actuators
+  device.getStatus = function() {
+    var status = {};
+    for (var name in this.actuators) {
+      if (this.actuators.hasOwnProperty(name)) {
+        //console.log(JSON.stringify(this.actuators[name]));
+        status[name] = this.actuators[name].state;
+      }
+    }
+
+    return status;
+  }
 }
 
 exports.onCommand = function onCommand(device, data) {
-  //var pins = device.pins;
+  var pins = device.actuators;
   var serialPort = device.serialPort;
 
   if (data.module === "Demo") {
-    demo.run(device, pins);
+    //demo.run(device, pins); // must update pins
 
   } else if ( data.module === "sensors" ) {
     // TODO: issue command {entries:} and parse the result, and loop through it
@@ -54,47 +127,44 @@ exports.onCommand = function onCommand(device, data) {
   } else if (data.module === "lights" && data.values) {
       if (data.relayID === 'Indicators') {
         console.log("light command receive: "+data.values.red+" "+data.values.green+" "+data.values.blue+"\n");
-      	device.analogWrite(pins.RGB.pin, data.values.red);
-        device.analogWrite(pins.RGB.pin+1, data.values.green);
-		    device.analogWrite(pins.RGB.pin+2, data.values.blue);
+      	device.analogWrite(pins.ledRedRGB.pin, data.values.red);
+        device.analogWrite(pins.ledGreen.pin,  data.values.green);
+		    device.analogWrite(pins.ledBlue.pin,   data.values.blue);
 	    }
 
   } else if (data.module === "LoadPump") {
     device.digitalWrite(pins.load, data.state);
-    // device.digitalWrite(pins.NCvalve, data.state);
-    // device.digitalWrite(pins.NOvalve, data.state);
 
   } else if (data.module === "RecircValve") {
     device.digitalWrite(pins.NOvalve, data.state);
 
   } else if (data.module === "mixSpeed") {
     device.analogWrite(pins.mixSpeed, data.value);
-    console.log('Mix Speed :' + data.value);
 
   } else if (data.module === "mixDirection"){
     device.digitalWrite(pins.mixDirection, data.state);
   
   } else if (data.module === "DrainValve") {
-    device.digitalWrite(pins.NCvalve, data.state);
+    device.digitalWrite(pins.DrainValue, data.state);
 
   } else if (data.module === "DispenseValve") {
-    device.digitalWrite(pins.dispense, data.state);
+    device.digitalWrite(pins.DispenseValue, data.state);
 
   } else if (data.module === "RecircPump") {
-    device.digitalWrite(pins.recirc, data.state);
+    device.digitalWrite(pins.RecircPump, data.state);
 
   } else if (data.module == "AirPump") {
-     device.digitalWrite(pins.air, data.state);
+     device.digitalWrite(pins.AirPump, data.state);
 
   } else if (data.module == "growLight") {
     if (data.state == false) data.value = 0;
-    device.digitalWrite(pins.growlight, data.state);
-    device.analogWrite(pins.growlux.pin, data.value);
-    device.analogWrite(pins.growlux.pin+1, data.value);
+    device.digitalWrite(pins.growRelayt, data.state);
+    device.analogWrite(pins.growLight.pin, data.value);
+    device.analogWrite(pins.growLight.pin+1, data.value);
     console.log(data.value);
 
   } else if (data.module == "DosePump") {
-    device.digitalWrite(pins.dose, data.state);
+    device.digitalWrite(pins.DosePump, data.state);
 
   } else if ( data.module === "thermocycle-off" ) {
     //serialPort.write("t\n");

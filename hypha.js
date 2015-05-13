@@ -22,7 +22,7 @@ exports.findDevices = function(callback) {
     });
 
     serialPort.on("error", function(err) {
-      console.log('error opening serial port: ' + f);
+      console.log('error opening serial port: ' + err);
     });
 
     serialPort.on("open", function () {
@@ -33,7 +33,7 @@ exports.findDevices = function(callback) {
         try {
           var msg = JSON.parse(data);
           var init = msg.init;
-          if (init != undefined && init.firmware === 'Hypha' && init.name != undefined) {
+          if (init && init.firmware === 'Hypha' && init.name) {
             //console.log('found Hypha device: ' + init.name);
             //serialPort.on('data', function(data) {}); // remove handler
             var o = {deviceID:init.name, path:filename, serialPort:serialPort};
