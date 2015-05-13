@@ -36,7 +36,7 @@
 
         <!-- <img src="/img/sensa.io.png" style="height: 40px; width: auto; float: left; padding: 12px"> -->
         <img src="/img/sensa_circuit.png" style="height:50px; float: left; padding: 5px 0">
-        <img src="/img/sensa_word.png" style="height:50px; float: left; padding: 5px 20px 0 0">
+        <img src="/img/arkweb.png" style="height:50px; float: left; padding: 5px 20px 0 0">
         <ul class="nav nav-pills" style="margin: 10px 10px 0 0">
           <!--li style="padding: 5px"><a href="#Sensa" data-toggle="pill">Sensa</a></li-->
           <li style="padding: 5px" class="active"><a href="#Liquid" data-toggle="pill">Liquid</a></li>
@@ -489,7 +489,8 @@
     // var host = window.document.location.host.replace(/:.*/, '');
     // var socket = io.connect('http://192.168.1.225:8088'); //James' Router
     // var socket = io.connect('http://25.124.233.64:8088'); //Hamachi
-    var socket = io.connect('http://192.168.255.100:8088'); //Frank's Router
+    // var socket = io.connect('http://192.168.255.100:8088'); //Frank's Router
+    var socket = io.connect('http://localhost:8088');
 
     socket.on('connect', function() { console.log('websocket connected'); });
     socket.on('error', function(err)  { console.log('websocket error: ' + err); });
