@@ -14,7 +14,7 @@
   <script src="/lib/bootstrap-switch.js"></script>
   <script src="/lib/bootstrap.min.js"></script>
 
-  <script src="http://www.amcharts.com/lib/amcharts.js"></script>
+  <!--script src="/lib/amcharts.js"></script-->
 
   <style>
     .sensor-panel {
@@ -484,19 +484,19 @@
 <script>
 //send sensa up to UI
 
-    // var socket = io.connect(window.document.location.host);
+    var socket = io.connect(window.document.location.host);
     // var socket = io.connect('/');
     // var host = window.document.location.host.replace(/:.*/, '');
     // var socket = io.connect('http://192.168.1.225:8088'); //James' Router
     // var socket = io.connect('http://25.124.233.64:8088'); //Hamachi
     // var socket = io.connect('http://192.168.255.100:8088'); //Frank's Router
-    var socket = io.connect('http://localhost:8088');
+    // var socket = io.connect('http://localhost:8088');
 
     socket.on('connect', function() { console.log('websocket connected'); });
     socket.on('error', function(err)  { console.log('websocket error: ' + err); });
     socket.on('connect_failed', function(err)  { console.log('websocket error: ' + err); });
 
-    socket.on('sensor_reading', function(data){
+    /*socket.on('sensor_reading', function(data){
       console.log('sensor_reading:' + data);
       if (data === 'NaN' || isNaN(data)) data = 50 + 30*Math.random();
 
@@ -510,7 +510,7 @@
         var end = chart.chartData.length - 1;
         chart.zoomToIndexes(end - gLength, end);
       }
-    });
+    });*/
 
     socket.on('sensor_report', function(data){
       console.log('Sensor Report: ' + JSON.stringify(data));
@@ -539,6 +539,10 @@
       }
 
       if (datum !== data.measurement.datum) console.log('msg changed somehow');
+    });
+
+    socket.on('status_report', function(data) {
+      console.log(data);
     });
 
   </script>
@@ -846,7 +850,7 @@
    </script>
 
 
-<script>
+<!--script>
 gAtEnd = true;
 gLength = 0;
 var chart = null;
@@ -994,6 +998,6 @@ function handleZoom(event) {
 //     }
 
 //
-</script>
+</script-->
 </body>
 </html>

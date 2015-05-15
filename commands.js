@@ -13,8 +13,9 @@ var demo = require('./demo');
 // TODO: store pin values with device description in microcontroller
 var gHyphaDeviceActuatorMap = {
   Kefir:{
+    //sensors:       {},
     RecircPump:    {pin:38, activeLow:true},
-    DispenseValue: {pin:40, activeLow:true},
+    DispenseValve: {pin:40, activeLow:true},
     RecircValve:   {pin:42, activeLow:true},
     DrainValve:    {pin:44, activeLow:true},
     growRelay:     {pin:48, activeLow:true},
@@ -107,6 +108,9 @@ exports.onCommand = function onCommand(device, data) {
   } else if ( data.module === "sensors" ) {
     // TODO: issue command {entries:} and parse the result, and loop through it
     // TODO: change Hypha so that sensor entries have an enabled flag, instead of changing measurement period
+    
+    device.serialPort.write("{sensors:" + (data.State? 1: 0)  + "}\n");
+
     var numSensors = 7;
     msMeasurementTime = data.state ? 1000 : 0;
     var period = data.state ? numSensors*msMeasurementTime : 0;
@@ -127,46 +131,62 @@ exports.onCommand = function onCommand(device, data) {
   } else if (data.module === "lights" && data.values) {
       if (data.relayID === 'Indicators') {
         console.log("light command receive: "+data.values.red+" "+data.values.green+" "+data.values.blue+"\n");
-      	device.analogWrite(pins.ledRedRGB.pin, data.values.red);
+      	device.analogWrite(pins.ledRed.pin, data.values.red);
         device.analogWrite(pins.ledGreen.pin,  data.values.green);
 		    device.analogWrite(pins.ledBlue.pin,   data.values.blue);
+        pins.ledRed.state = data.values.red;
+        pins.ledGreen.state = data.values.green;
+        pins.ledBlue.state = data.values.blue;
 	    }
 
   } else if (data.module === "LoadPump") {
     device.digitalWrite(pins.load, data.state);
+    pins.LoadPump.state = data.state;
 
   } else if (data.module === "RecircValve") {
     device.digitalWrite(pins.NOvalve, data.state);
+    pins.RecircValve.state = data.state;
 
   } else if (data.module === "mixSpeed") {
     device.analogWrite(pins.mixSpeed, data.value);
+    pins.mixSpeed.state = data.value;
 
   } else if (data.module === "mixDirection"){
     device.digitalWrite(pins.mixDirection, data.state);
+    pins.mixDirection.state = data.state;
   
   } else if (data.module === "DrainValve") {
     device.digitalWrite(pins.DrainValue, data.state);
+    pins.DrainValve.state = data.state;
 
   } else if (data.module === "DispenseValve") {
     device.digitalWrite(pins.DispenseValue, data.state);
+    pins.DispenseValve.state = data.state;
 
   } else if (data.module === "RecircPump") {
     device.digitalWrite(pins.RecircPump, data.state);
+    pins.RecircPump.state = data.state;
 
   } else if (data.module == "AirPump") {
-     device.digitalWrite(pins.AirPump, data.state);
+    device.digitalWrite(pins.AirPump, data.state);
+    pins.AirPump.state = data.state;
 
   } else if (data.module == "growLight") {
     if (data.state == false) data.value = 0;
-    device.digitalWrite(pins.growRelayt, data.state);
+    device.digitalWrite(pins.growRelay, data.state);
     device.analogWrite(pins.growLight.pin, data.value);
     device.analogWrite(pins.growLight.pin+1, data.value);
+    pins.growLight.state = data.value;
+    pins.growRelay.state = data.state;
     console.log(data.value);
 
   } else if (data.module == "DosePump") {
     device.digitalWrite(pins.DosePump, data.state);
-
-  } else if ( data.module === "thermocycle-off" ) {
+    pins.DosePump.state = data.state;
+ 
+  }
+  
+  /* else if ( data.module === "thermocycle-off" ) {
     //serialPort.write("t\n");
     thermocycleState = false;
     //resetThermocycle();
@@ -222,6 +242,7 @@ exports.onCommand = function onCommand(device, data) {
   } else if ( data.module === "stopSchedule" ){
     relays.initialize();
   }
+  */
 }
 
 

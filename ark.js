@@ -113,6 +113,28 @@ function blastSensorReadingToClients(payload) {
   blastToClients('sensor_reading', payload);
 }
 
+function statusReport() {
+  var report = {};
+  for (name in gSerialDevices) {
+    console.log('reporting on ' + name);
+    if (gSerialDevices.hasOwnProperty(name)) {
+      var device = gSerialDevices[name];
+      report[device.deviceID] = device.getStatus();
+    }
+  }
+  return report;
+}
+
+function emitStatusReport(socket) {
+  socket.emit('status_report', statusReport());
+}
+
+function blastStatusReport() {
+  connections.forEach(function(c) {
+    emitStatusReport(c);
+  });
+}
+
 
 ////////////////////////////////////////////////////////////////////////////
 // LOCAL SOCKET
@@ -122,6 +144,8 @@ var commands = require('./commands.js');
 io.sockets.on('connection', function (socket) {
   connections.push(socket);
   console.log("CONNECTED");
+  //console.log(JSON.stringify(statusReport()));
+  emitStatusReport(socket);
 
   socket.on('disconnect', function(socket){
     var i = connections.indexOf(socket);
@@ -135,7 +159,7 @@ io.sockets.on('connection', function (socket) {
     printProperties(gSerialDevices);*/
 
     // hack in an ID for now--client should send the deviceID
-    if (!data.deviceID) data.deviceID = 'none';
+    if (!data.deviceID) data.deviceID = 'Kefir';
   	console.log(data);
 
    // find the device with the id
@@ -146,6 +170,7 @@ io.sockets.on('connection', function (socket) {
     }
 
     commands.onCommand(device, data);
+    blastStatusReport();
   });
 });
 
@@ -260,5 +285,9 @@ function printProperties(o) {
   console.log(str + '}');
 }
 
-
+function tempReading() {
+  var temp = 74 + Math.random()*.3;
+  blastSensorReadingToClients(temp);
+}
+setInterval(tempReading, 1000);
 

@@ -1,0 +1,165 @@
+<meta charset="utf-8">
+
+<style>
+body
+{
+    font-size:12px;
+    color:#000000;
+    background-color:#ffffff;
+    font-family:verdana,helvetica,arial,sans-serif;
+}
+</style>
+
+
+<body>
+<script src="/socket.io/socket.io.js"></script>
+<script src="http://www.amcharts.com/lib/amcharts.js" type="text/javascript"></script>
+
+<div id="chartdiv" style="width: 100%; height: 340px;"></div>
+
+<script>
+gAtEnd = true;
+gLength = 0;
+var chart = null;
+var chartData = [];
+var chartCursor;
+
+var date = new Date(2015, 3, 10, 0, 0, 0);
+tempdata = [46.0,43.0,42.1,39.0,39.9,37.9,39.0,42.1,48.0,54.0,60.1,64.0,66.9,69.1,69.1,70.0,69.1,68.0,64.0,57.9,53.1,51.1,50.0,48.0,45.0,45.0,43.0,43.0,42.1,42.1,42.1,43.0,48.9,55.0,61.0,66.0,71.1,73.0,73.0,73.9,73.0,72.0,69.1,64.0,60.1,59.0,55.0,54.0,48.9,48.0,46.0,46.9,46.0,45.0,44.1,52.0,55.9,62.1,66.0,70.0,73.0,77.0,75.0,77.0,77.0,75.0,71.1,63.0,57.9,53.1,51.1,50.0,48.9,46.9,44.1,45.0,45.0,45.0,46.0,46.9,48.0,48.0,52.0,57.0,63.0,66.0,70.0,68.0,68.0,64.9,64.0,57.9,55.9,54.0,52.0,51.1,50.0,48.0,46.9,44.1,46.0,45.0,45.0,48.9,53.1,55.9,57.9,61.0,63.0,64.0,66.0,64.9,64.9,66.2,63.0,60.1,55.9,53.1,52.0,50.0,48.9,46.9,46.9,46.0,46.0,45.0,43.0,44.1,48.9,54.0,57.9,64.0,69.1,72.0,75.0];
+
+
+// create chart
+AmCharts.ready(function() {
+  function addData() { 
+    tempdata.forEach(function(datum) {
+    chartData.push({date:new Date(date), readings:datum});
+      date.setHours(date.getHours() + 1); 
+    });
+  }
+
+  addData();
+ 
+ 
+    chart = new AmCharts.AmSerialChart();
+    chart.pathToImages = "http://www.amcharts.com/lib/images/";
+    chart.titles=[
+    {
+      "text": "Temperature in Sebastopol",
+      "size": 20
+    }];
+    chart.marginTop = 0;
+    chart.marginRight = 10;
+    chart.autoMarginOffset = 5;
+    chart.zoomOutButton = {
+        backgroundColor: '#000000',
+        backgroundAlpha: 0.15
+    };
+    chart.dataProvider = chartData;
+    chart.categoryField = "date";
+
+    // AXES
+    // category
+    var categoryAxis = chart.categoryAxis;
+    categoryAxis.parseDates = true; // as our data is date-based, we set parseDates to true
+    categoryAxis.minPeriod = "hh"; 
+    categoryAxis.dashLength = 1;
+    categoryAxis.gridAlpha = 0.15;
+    categoryAxis.axisColor = "#DADADA";
+    categoryAxis.dateFormats = [{
+        period: 'fff',
+        format: 'JJ:NN:SS'
+    }, {
+        period: 'ss',
+        format: 'JJ:NN:SS'
+    }, {
+        period: 'mm',
+        format: 'JJ:NN'
+    }, {
+        period: 'hh',
+        format: 'EEE LL A'
+    }, {
+        period: 'DD',
+        format: 'MMM DD'
+    }, {
+        period: 'WW',
+        format: 'MMM DD'
+    }, {
+        period: 'MM',
+        format: 'MMM YYYY'
+    }, {
+        period: 'YYYY',
+        format: 'MMM YYYY'
+    }];
+
+    // value                
+    var valueAxis = new AmCharts.ValueAxis();
+    valueAxis.axisAlpha = 0.2;
+    valueAxis.dashLength = 1;
+    chart.addValueAxis(valueAxis);
+
+    // GRAPH
+    var graph = new AmCharts.AmGraph();
+    graph.title = "Temperature in Sebastopol";
+    graph.valueField = "readings";
+    graph.bullet = "round";
+    graph.bulletBorderColor = "#FFFFFF";
+    graph.bulletBorderThickness = 2;
+    graph.lineThickness = 2;
+    graph.lineColor = "#b5030d";
+    //graph.negativeLineColor = "#0352b5";
+    graph.hideBulletsCount = 50; // this makes the chart to hide bullets when there are more than 50 series in selection
+    chart.addGraph(graph);
+
+    // CURSOR
+    chartCursor = new AmCharts.ChartCursor();
+    chartCursor.cursorPosition = "mouse";
+    chart.addChartCursor(chartCursor);
+
+    // SCROLLBAR
+    var chartScrollbar = new AmCharts.ChartScrollbar();
+    chartScrollbar.graph = graph;
+    chartScrollbar.scrollbarHeight = 40;
+    chartScrollbar.color = "#FFFFFF";
+    chartScrollbar.autoGridCount = true;
+    chart.addChartScrollbar(chartScrollbar);
+    
+    chart.zoomOutOnDataUpdate = false;
+    chart.addListener("zoomed", handleZoom);
+
+    // WRITE
+    chart.write("chartdiv");
+});
+
+
+//var ws = io.connect(window.document.location.host);
+var ws = io.connect('http://25.124.244.64:8088');
+ws.on('sensor_reading', function(reading){
+  console.log('Sensor Reading: ' + reading);
+  //data.shift();
+  var datum = parseFloat(reading);
+
+  chart.dataProvider.push({
+    date: new Date(),
+    readings: datum
+  });
+  chart.validateData();
+                
+  /*if (gAtEnd) {
+    var end = chart.chartData.length - 1;
+    chart.zoomToIndexes(end - gLength, end);
+  }*/
+});
+
+function handleZoom(event) {
+  if(event.endIndex+1 == event.chart.chartData.length) {
+    //console.log('at end');
+    gAtEnd = true;
+    gLength = event.endIndex - event.startIndex;
+  }
+  else gAtEnd = false;
+}
+
+
+</script>
+
+
